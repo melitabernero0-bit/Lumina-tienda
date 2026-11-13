@@ -20,8 +20,9 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
-body {
-  font-family: 'Jost', sans-serif;
+
+body, .font-sans {
+  font-family: 'Jost', sans-serif !important;
 }
 
 .font-serif {
