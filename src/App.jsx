@@ -31,7 +31,7 @@ export default function App() {
   const [opcionElegida, setOpcionElegida] = useState('');
   const [cantidadModal, setCantidadModal] = useState(1);
   const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
-
+z
   const abrirDetalleProducto = (producto) => {
     setProductoModal(producto);
     setCantidadModal(1);
