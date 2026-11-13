@@ -1,11 +1,11 @@
 export const PRODUCTOS_INICIALES = [
   {
     id: 1,
-    nombre: "Gloss Hidratante Rose",
-    precio: 8900,
-    categoria: "LABIOS",
-    descripcion: "Brillo labial con ácido hialurónico y acabado natural.",
-    imagen: "https://unsplash.com"
+    nombre: "Gel postsolar Luyagus",
+    precio: 3200,
+    categoria: "CUIDADO PERSONAL",
+    descripcion: "Gel postsolar Luyagus 30g.",
+    imagen: "/1971F7F9-EC75-4626-BDF2-F3E1F19C473E.png"
   },
   {
     id: 2,
