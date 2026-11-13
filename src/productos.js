@@ -9,11 +9,11 @@
 export const PRODUCTOS_INICIALES = [
   {
     id: 1,
-    nombre: "Set Brochas Soft",
-    precio: 14500,
+    nombre: "Arqueador de pestañas"
+    precio: 3200,
     categoria: "ACCESORIOS",
-    descripcion: "Set de brochas ultra suaves para rostro y ojos.",
-    imagen: "https://unsplash.com"
+    descripcion: "Arqueador de pestañas con peine",
+    imagen: "https://ibb.co/jPHtkpMH"
   },
   {
     id: 2,
