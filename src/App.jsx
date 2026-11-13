@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
   ShoppingBag, Eye, Smile, Sparkles, Brush, Heart, X,
-  Plus, Minus, Trash2, Check, MessageCircle, MapPin,
-  Truck, Calendar, ChevronDown, ChevronLeft, ChevronRight, Menu
+  Plus, Minus, Trash2, MessageCircle,
+  ChevronDown, ChevronLeft, ChevronRight, Menu
 } from 'lucide-react';
 import { PRODUCTOS_INICIALES } from './productos.js';
 
@@ -26,6 +26,7 @@ export default function App() {
   const [metodoPago, setMetodoPago] = useState('transferencia');
   const [nombreCliente, setNombreCliente] = useState('');
   const [direccionCliente, setDireccionCliente] = useState('');
+
   const [productoModal, setProductoModal] = useState(null);
   const [opcionElegida, setOpcionElegida] = useState('');
   const [cantidadModal, setCantidadModal] = useState(1);
@@ -35,11 +36,21 @@ export default function App() {
     setProductoModal(producto);
     setCantidadModal(1);
     setFotoActivaIdx(0);
-    setOpcionElegida(producto.opciones && producto.opciones.length > 0 ? producto.opciones.at(0) : '');
+    const opcionesDisponibles = producto.opciones || producto.tonos || producto.colores || [];
+    setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
+  };
+
+  const cerrarDetalleProducto = () => {
+    setProductoModal(null);
+    setOpcionElegida('');
   };
 
   const fotosModal = productoModal
     ? (productoModal.imagenes && productoModal.imagenes.length > 0 ? productoModal.imagenes : [productoModal.imagen])
+    : [];
+
+  const opcionesModal = productoModal
+    ? (productoModal.opciones || productoModal.tonos || productoModal.colores || [])
     : [];
 
   const productosFiltrados = categoriaActiva === 'TODAS'
@@ -51,37 +62,67 @@ export default function App() {
     setDesplegableCatMovil(false);
     setMenuMovilAbierto(false);
   };
-
-  const agregarAlCarrito = (producto) => {
+  const agregarAlCarrito = (producto, cantidad = 1, tono = '') => {
+    const claveUnica = tono ? `${producto.id}-${tono}` : `${producto.id}`;
     setCarrito((prev) => {
-      const existe = prev.find((item) => item.id === producto.id);
-      if (existe) return prev.map((item) => item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item);
-      return [...prev, { ...producto, cantidad: 1 }];
+      const existe = prev.find((item) => item.claveUnica === claveUnica);
+      if (existe) {
+        return prev.map((item) =>
+          item.claveUnica === claveUnica ? { ...item, cantidad: item.cantidad + cantidad } : item
+        );
+      }
+      return [...prev, { ...producto, claveUnica, opcionElegida: tono, cantidad }];
     });
     setCarritoAbierto(true);
   };
 
-  const cambiarCantidad = (id, delta) => {
-    setCarrito((prev) => prev.map((item) => item.id === id ? { ...item, cantidad: Math.max(0, item.cantidad + delta) } : item).filter((item) => item.cantidad > 0));
+  const cambiarCantidad = (claveUnica, delta) => {
+    setCarrito((prev) =>
+      prev
+        .map((item) => (item.claveUnica === claveUnica ? { ...item, cantidad: Math.max(0, item.cantidad + delta) } : item))
+        .filter((item) => item.cantidad > 0)
+    );
   };
 
-  const quitarProducto = (id) => setCarrito((prev) => prev.filter((item) => item.id !== id));
+  const quitarProducto = (claveUnica) => setCarrito((prev) => prev.filter((item) => item.claveUnica !== claveUnica));
+
   const totalProductos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
   const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const costoEnvio = metodoEntrega === 'envio' && subtotal > 0 ? 4000 : 0;
   const totalFinal = subtotal + costoEnvio;
 
-  const formatearPrecio = (valor) => new Intl.NumberFormat('es-AR', {
-    style: 'currency', currency: 'ARS', maximumFractionDigits: 0,
-  }).format(valor);
+  const formatearPrecio = (valor) =>
+    new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      maximumFractionDigits: 0,
+    }).format(valor);
 
   const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=Hola%20Lumina!%20Quiero%20mas%20informacion`;
-    return (
+
+  const enviarPedidoWhatsApp = () => {
+    if (carrito.length === 0) return;
+    let texto = `Hola Lumina! Quiero hacer el siguiente pedido:\n\n`;
+    carrito.forEach((item) => {
+      const detalleTono = item.opcionElegida ? ` (Tono/Opción: ${item.opcionElegida})` : '';
+      texto += `• ${item.cantidad}x ${item.nombre}${detalleTono} - ${formatearPrecio(item.precio * item.cantidad)}\n`;
+    });
+    texto += `\nSubtotal: ${formatearPrecio(subtotal)}`;
+    texto += `\nEntrega: ${metodoEntrega === 'envio' ? `Envío a domicilio (${formatearPrecio(costoEnvio)})` : 'Retiro a coordinar (Gratis)'}`;
+    texto += `\nTotal: ${formatearPrecio(totalFinal)}`;
+    texto += `\nPago: ${metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo'}`;
+    if (nombreCliente) texto += `\nNombre: ${nombreCliente}`;
+    if (metodoEntrega === 'envio' && direccionCliente) texto += `\nDirección: ${direccionCliente}`;
+
+    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, '_blank');
+  };
+
+  return (
     <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
       <div className="bg-[#EFE8E0] text-[#5C534E] text-[11px] tracking-[0.2em] uppercase py-2 overflow-hidden border-b border-[#E5DDD3]">
-        <div className="animate-marquee">
+        <div className="animate-marquee whitespace-nowrap">
           {Array.from({ length: 10 }).map((_, idx) => (
-            <span key={idx} className="mx-6 whitespace-nowrap">SIN MÍNIMO DE COMPRA · ENVÍOS A DOMICILIO</span>
+            <span key={idx} className="mx-6">SIN MÍNIMO DE COMPRA · ENVÍOS A DOMICILIO</span>
           ))}
         </div>
       </div>
@@ -91,7 +132,9 @@ export default function App() {
           <button onClick={() => setMenuMovilAbierto(!menuMovilAbierto)} className="sm:hidden p-2 text-[#2C2C2C]">
             {menuMovilAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <a href="#" onClick={() => seleccionarCategoria('TODAS')} className="font-serif text-2xl sm:text-3xl tracking-[0.22em] text-[#2C2C2C]">LUMINA</a>
+          <a href="#" onClick={() => seleccionarCategoria('TODAS')} className="font-serif text-2xl sm:text-3xl tracking-[0.22em] text-[#2C2C2C]">
+            LUMINA
+          </a>
           <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.18em] text-[#6E655F]">
             <a href="#categorias" className="hover:text-[#2C2C2C] transition">CATEGORÍAS</a>
             <a href="#coleccion" className="hover:text-[#2C2C2C] transition">COLECCIÓN</a>
@@ -99,7 +142,9 @@ export default function App() {
           <button onClick={() => setCarritoAbierto(true)} className="relative p-2 text-[#2C2C2C] hover:opacity-75 transition">
             <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
             {totalProductos > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-[#C8A29E] text-white text-[10px] font-medium w-4 h-4 rounded-full flex items-center justify-center">{totalProductos}</span>
+              <span className="absolute -top-0.5 -right-0.5 bg-[#C8A29E] text-white text-[10px] font-medium w-4 h-4 rounded-full flex items-center justify-center">
+                {totalProductos}
+              </span>
             )}
           </button>
         </div>
@@ -107,163 +152,226 @@ export default function App() {
         {menuMovilAbierto && (
           <div className="sm:hidden bg-[#FDF2F4] border-b border-[#EDE6DD] px-5 py-4 space-y-2">
             <p className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78] pb-1">CATÁLOGO POR CATEGORÍA</p>
-            <button onClick={() => seleccionarCategoria('TODAS')} className="block w-full text-left py-2 text-xs tracking-[0.15em] uppercase text-[#2C2C2C]">Ver todo el catálogo</button>
+            <button onClick={() => seleccionarCategoria('TODAS')} className="block w-full text-left py-2 text-xs tracking-[0.15em] uppercase text-[#2C2C2C]">
+              Ver todo el catálogo
+            </button>
             {CATEGORIAS.map((cat) => (
-              <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="block w-full text-left py-2 text-xs tracking-[0.15em] uppercase border-t border-[#F0EAE2] text-[#2C2C2C]">{cat.nombre}</button>
+              <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="block w-full text-left py-2 text-xs tracking-[0.15em] uppercase border-t border-[#F0EAE2] text-[#2C2C2C]">
+                {cat.nombre}
+              </button>
             ))}
           </div>
         )}
       </header>
-
       <section className="px-4 sm:px-6 pt-6 pb-8">
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#F9ECE4] via-[#F5EFEA] to-[#EFE8F3] border border-[#EDE4DC] py-14 sm:py-24 px-6 text-center">
           <h1 className="font-serif text-4xl sm:text-6xl font-normal text-[#2C2C2C] mb-4">Tus esenciales</h1>
-          <p className="font-serif italic text-lg sm:text-xl text-[#6E655F] max-w-md mx-auto mb-8">Productos de belleza y cuidado para todos los días.</p>
-          <a href="#coleccion" className="inline-block border border-[#2C2C2C] px-7 py-3 text-xs tracking-[0.2em] uppercase text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FDF2F4] transition">VER COLECCIÓN</a>
+          <p className="font-serif italic text-lg sm:text-xl text-[#6E655F] max-w-md mx-auto mb-8">
+            Productos de belleza y cuidado para todos los días.
+          </p>
+          <a href="#coleccion" className="inline-block border border-[#2C2C2C] px-7 py-3 text-xs tracking-[0.2em] uppercase text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FDF2F4] transition">
+            VER COLECCIÓN
+          </a>
         </div>
       </section>
 
       <section id="categorias" className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-4 text-center">
         <h2 className="font-serif text-3xl text-[#2C2C2C] mb-6">Categorías</h2>
+
         <div className="sm:hidden max-w-xs mx-auto mb-4 relative">
-          <button onClick={() => setDesplegableCatMovil(!desplegableCatMovil)} className="w-full flex items-center justify-between px-4 py-3 bg-[#F4EFEA] border border-[#E5DDD3] rounded-xl text-xs tracking-[0.16em] uppercase text-[#2C2C2C]">
+          <button
+            onClick={() => setDesplegableCatMovil(!desplegableCatMovil)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-[#F4EFEA] border border-[#E5DDD3] rounded-xl text-xs tracking-[0.16em] uppercase text-[#2C2C2C]"
+          >
             <span>{categoriaActiva === 'TODAS' ? 'Elegir categoría (Todas)' : categoriaActiva}</span>
             <ChevronDown className={`w-4 h-4 text-[#8C7F78] transition-transform ${desplegableCatMovil ? 'rotate-180' : ''}`} />
           </button>
           {desplegableCatMovil && (
             <div className="mt-1.5 bg-white border border-[#EDE6DD] rounded-xl shadow-md overflow-hidden text-left">
-              <button onClick={() => seleccionarCategoria('TODAS')} className="w-full px-4 py-2.5 text-xs tracking-[0.15em] uppercase hover:bg-[#F4EFEA] border-b border-[#F5EFEA]">VER TODO</button>
+              <button onClick={() => seleccionarCategoria('TODAS')} className="w-full px-4 py-2.5 text-xs tracking-[0.15em] uppercase hover:bg-[#F4EFEA] border-b border-[#F5EFEA]">
+                VER TODO
+              </button>
               {CATEGORIAS.map((cat) => (
-                <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="w-full px-4 py-2.5 text-xs tracking-[0.15em] uppercase hover:bg-[#F4EFEA] border-b border-[#F5EFEA] last:border-none">{cat.nombre}</button>
+                <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="w-full px-4 py-2.5 text-xs tracking-[0.15em] uppercase hover:bg-[#F4EFEA] border-b border-[#F5EFEA]">
+                  {cat.nombre}
+                </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="hidden sm:grid sm:grid-cols-5 gap-6 justify-items-center">
+        <div className="hidden sm:flex flex-wrap justify-center gap-3">
+          <button
+            onClick={() => seleccionarCategoria('TODAS')}
+            className={`px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase transition border ${
+              categoriaActiva === 'TODAS' ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white text-[#6E655F] border-[#E5DDD3] hover:border-[#2C2C2C]'
+            }`}
+          >
+            TODAS
+          </button>
           {CATEGORIAS.map((cat) => {
             const Icono = cat.icono;
-            const activa = categoriaActiva === cat.id;
             return (
-              <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="group flex flex-col items-center gap-2.5">
-                <div className={`w-20 h-20 rounded-full flex items-center justify-center transition border ${activa ? 'bg-[#C8A29E] text-white border-[#C8A29E]' : 'bg-[#F4EFEA] text-[#5C534E] border-[#E8DFD5] group-hover:border-[#C8A29E]'}`}>
-                  <Icono className="w-6 h-6 stroke-[1.4]" />
-                </div>
-                <span className={`text-[11px] tracking-[0.15em] uppercase ${activa ? 'font-semibold text-[#2C2C2C]' : 'text-[#6E655F]'}`}>{cat.nombre}</span>
+              <button
+                key={cat.id}
+                onClick={() => seleccionarCategoria(cat.id)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs tracking-[0.16em] uppercase transition border ${
+                  categoriaActiva === cat.id ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white text-[#6E655F] border-[#E5DDD3] hover:border-[#2C2C2C]'
+                }`}
+              >
+                <Icono className="w-3.5 h-3.5" />
+                {cat.nombre}
               </button>
             );
           })}
         </div>
-        <div className="hidden sm:block mt-7">
-          <button onClick={() => seleccionarCategoria('TODAS')} className="text-[11px] tracking-[0.2em] uppercase text-[#6E655F] border-b border-[#C8A29E] pb-1 hover:text-[#2C2C2C]">VER TODO</button>
-        </div>
       </section>
-      <section id="coleccion" className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 flex-1">
-        <div className="text-center mb-8">
-          <p className="text-[10px] tracking-[0.25em] uppercase text-[#8C7F78] mb-2">{categoriaActiva === 'TODAS' ? 'TODOS LOS PRODUCTOS' : categoriaActiva}</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#2C2C2C]">Nuestra colección</h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {productosFiltrados.map((producto) => (
-            <div key={producto.id} className="bg-white rounded-xl border border-[#EDE6DD] overflow-hidden flex flex-col justify-between group">
-              <div onClick={() => abrirDetalleProducto(producto)} className="cursor-pointer">
-                <div className="aspect-square bg-[#F4EFEA] overflow-hidden">
-                  <img src={producto.imagen} alt={producto.nombre} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                </div>
-                <div className="p-3 sm:p-4">
-                  <p className="text-[9px] sm:text-[10px] tracking-[0.15em] uppercase text-[#9A8F88] mb-1">{producto.categoria}</p>
-                  <h3 className="font-serif text-lg sm:text-xl text-[#2C2C2C] leading-snug mb-1">{producto.nombre}</h3>
-                  {producto.descripcion && <p className="text-xs text-[#7A716B] line-clamp-2 mb-2">{producto.descripcion}</p>}
-                </div>
-              </div>
-              <div className="px-3 pb-3 sm:px-4 sm:pb-4 pt-1 flex flex-col gap-2">
-                <span className="text-sm sm:text-base font-medium text-[#2C2C2C]">{formatearPrecio(producto.precio)}</span>
-                <button
-                  onClick={() => producto.opciones && producto.opciones.length > 0 ? abrirDetalleProducto(producto) : agregarAlCarrito(producto)}
-                  className="w-full py-2 px-3 bg-[#F4EFEA] hover:bg-[#C8A29E] text-[#2C2C2C] hover:text-white text-[11px] tracking-[0.15em] uppercase rounded-lg transition font-medium"
+
+      <section id="coleccion" className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 flex-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {productosFiltrados.map((producto) => {
+            const tieneTonos = (producto.opciones || producto.tonos || producto.colores || []).length > 0;
+            return (
+              <div
+                key={producto.id}
+                className="bg-white rounded-2xl border border-[#EDE6DD] overflow-hidden flex flex-col shadow-sm hover:shadow-md transition"
+              >
+                <div
+                  onClick={() => abrirDetalleProducto(producto)}
+                  className="cursor-pointer group relative aspect-square bg-[#F9F6F2] overflow-hidden"
                 >
-                  {producto.opciones && producto.opciones.length > 0 ? 'Elegir tono' : 'Agregar'}
-                </button>
+                  <img
+                    src={producto.imagen}
+                    alt={producto.nombre}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                  {tieneTonos && (
+                    <span className="absolute bottom-2 left-2 bg-white/90 text-[#2C2C2C] text-[10px] tracking-wider uppercase px-2.5 py-1 rounded-full border border-[#E5DDD3]">
+                      Varios tonos
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
+                  <div onClick={() => abrirDetalleProducto(producto)} className="cursor-pointer">
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#8C7F78] mb-1">{producto.categoria}</p>
+                    <h3 className="font-serif text-base sm:text-lg text-[#2C2C2C] leading-snug mb-1">{producto.nombre}</h3>
+                    <p className="font-medium text-sm sm:text-base text-[#2C2C2C] mb-3">{formatearPrecio(producto.precio)}</p>
+                  </div>
+
+                  <button
+                    onClick={() => (tieneTonos ? abrirDetalleProducto(producto) : agregarAlCarrito(producto, 1, ''))}
+                    className="w-full py-2.5 rounded-xl bg-[#F4EFEA] hover:bg-[#2C2C2C] text-[#2C2C2C] hover:text-white text-[11px] tracking-[0.16em] uppercase transition font-medium"
+                  >
+                    {tieneTonos ? 'Elegir tono' : 'Agregar'}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
-
-      <footer className="border-t border-[#EDE6DD] py-6 px-4 text-center text-xs text-[#8C7F78]">
-        <p>© {new Date().getFullYear()} LUMINA · Córdoba, Argentina</p>
-      </footer>
-
-      <a href={linkWhatsAppConsulta} target="_blank" rel="noopener noreferrer" className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-[#25D366] text-white shadow-lg hover:scale-105 transition flex items-center justify-center">
-        <MessageCircle className="w-6 h-6 fill-white text-[#25D366]" />
-      </a>
-
       {productoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-[2px]" onClick={() => setProductoModal(null)} />
-          <div className="relative z-10 bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border border-[#EDE6DD] grid grid-cols-1 md:grid-cols-2">
-            <button onClick={() => setProductoModal(null)} className="absolute top-3 right-3 z-20 p-2 bg-white/90 rounded-full text-[#2C2C2C] shadow">
+        <div
+          onClick={cerrarDetalleProducto}
+          className="fixed inset-0 z-50 bg-black/75 flex items-end sm:items-center justify-center p-0 sm:p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#FDF2F4] w-full sm:max-w-lg max-h-[92vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto shadow-2xl border border-[#EDE6DD] relative flex flex-col"
+          >
+            <button
+              onClick={cerrarDetalleProducto}
+              className="absolute top-3 right-3 z-20 bg-white/90 text-[#2C2C2C] p-2.5 rounded-full shadow-md hover:bg-white transition"
+              aria-label="Cerrar"
+            >
               <X className="w-5 h-5" />
             </button>
-            <div className="bg-[#F4EFEA] p-4 flex flex-col justify-between">
-              <div className="relative aspect-square rounded-xl overflow-hidden bg-white">
-                <img src={fotosModal.at(fotoActivaIdx)} alt={productoModal.nombre} className="w-full h-full object-contain" />
-                {fotosModal.length > 1 && (
-                  <>
-                    <button onClick={() => setFotoActivaIdx((p) => (p === 0 ? fotosModal.length - 1 : p - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/85 rounded-full shadow">
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setFotoActivaIdx((p) => (p === fotosModal.length - 1 ? 0 : p + 1))} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/85 rounded-full shadow">
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </>
-                )}
-              </div>
+
+            <div className="relative w-full bg-white flex items-center justify-center">
+              <img
+                src={fotosModal[fotoActivaIdx]}
+                alt={productoModal.nombre}
+                className="w-full max-h-[55vh] sm:max-h-[450px] object-contain bg-white"
+              />
+
               {fotosModal.length > 1 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-                  {fotosModal.map((foto, idx) => (
-                    <button key={idx} onClick={() => setFotoActivaIdx(idx)} className={`w-14 h-14 rounded-lg overflow-hidden border-2 shrink-0 ${fotoActivaIdx === idx ? 'border-[#2C2C2C]' : 'border-transparent opacity-60'}`}>
-                      <img src={foto} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
+                <>
+                  <button
+                    onClick={() => setFotoActivaIdx((prev) => (prev === 0 ? fotosModal.length - 1 : prev - 1))}
+                    className="absolute left-3 bg-white/90 p-2 rounded-full shadow text-[#2C2C2C]"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setFotoActivaIdx((prev) => (prev === fotosModal.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-3 bg-white/90 p-2 rounded-full shadow text-[#2C2C2C]"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
               )}
             </div>
-            <div className="p-6 flex flex-col justify-between space-y-5">
+
+            <div className="p-5 sm:p-7 space-y-4">
               <div>
-                <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A8F88] mb-1">{productoModal.categoria}</p>
-                <h2 className="font-serif text-2xl text-[#2C2C2C] mb-2">{productoModal.nombre}</h2>
-                <p className="text-xl font-semibold text-[#2C2C2C] mb-4">{formatearPrecio(productoModal.precio)}</p>
-                {productoModal.descripcion && <p className="text-xs text-[#6E655F] leading-relaxed mb-5">{productoModal.descripcion}</p>}
-                {productoModal.opciones && productoModal.opciones.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs font-medium text-[#2C2C2C] mb-2">Opción / Tono: <span className="font-semibold">{opcionElegida}</span></p>
-                    <div className="flex flex-wrap gap-2">
-                      {productoModal.opciones.map((op) => (
-                        <button key={op} type="button" onClick={() => setOpcionElegida(op)} className={`px-3 py-1.5 text-xs rounded-lg border transition ${opcionElegida === op ? 'border-[#2C2C2C] bg-[#2C2C2C] text-white font-medium' : 'border-[#E5DDD3] bg-white text-[#2C2C2C]'}`}>
-                          {op}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <span className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78]">{productoModal.categoria}</span>
+                <h2 className="font-serif text-2xl sm:text-3xl text-[#2C2C2C] mt-0.5">{productoModal.nombre}</h2>
+                <p className="text-xl font-semibold text-[#2C2C2C] mt-1">{formatearPrecio(productoModal.precio)}</p>
               </div>
-              <div className="pt-3 border-t border-[#EDE6DD] flex items-center gap-3">
-                <div className="flex items-center border border-[#E5DDD3] rounded-xl">
-                  <button onClick={() => setCantidadModal((c) => Math.max(1, c - 1))} className="p-2.5"><Minus className="w-3.5 h-3.5" /></button>
-                  <span className="px-3 text-xs font-semibold">{cantidadModal}</span>
-                  <button onClick={() => setCantidadModal((c) => c + 1)} className="p-2.5"><Plus className="w-3.5 h-3.5" /></button>
+
+              {productoModal.descripcion && (
+                <p className="text-sm text-[#5C534E] leading-relaxed border-t border-[#E5DDD3] pt-3">
+                  {productoModal.descripcion}
+                </p>
+              )}
+
+              {opcionesModal.length > 0 && (
+                <div className="border-t border-[#E5DDD3] pt-4">
+                  <p className="text-xs tracking-[0.15em] uppercase text-[#6E655F] mb-2.5">
+                    Tono / Color: <strong className="text-[#2C2C2C]">{opcionElegida}</strong>
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {opcionesModal.map((opcion, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setOpcionElegida(opcion)}
+                        className={`px-3.5 py-2 rounded-xl text-xs border transition ${
+                          opcionElegida === opcion
+                            ? 'bg-[#2C2C2C] text-white border-[#2C2C2C] font-medium'
+                            : 'bg-white text-[#2C2C2C] border-[#D8CFC4] hover:border-[#2C2C2C]'
+                        }`}
+                      >
+                        {opcion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              <div className="border-t border-[#E5DDD3] pt-4 flex items-center gap-3">
+                <div className="flex items-center border border-[#D8CFC4] bg-white rounded-xl">
+                  <button
+                    onClick={() => setCantidadModal((c) => Math.max(1, c - 1))}
+                    className="p-3 text-[#2C2C2C]"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="px-3 text-sm font-medium">{cantidadModal}</span>
+                  <button
+                    onClick={() => setCantidadModal((c) => c + 1)}
+                    className="p-3 text-[#2C2C2C]"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
                 <button
                   onClick={() => {
-                    const nombreFinal = opcionElegida ? `${productoModal.nombre} (${opcionElegida})` : productoModal.nombre;
-                    const idFinal = opcionElegida ? `${productoModal.id}-${opcionElegida}` : productoModal.id;
-                    for (let i = 0; i < cantidadModal; i++) {
-                      agregarAlCarrito({ ...productoModal, id: idFinal, nombre: nombreFinal });
-                    }
-                    setProductoModal(null);
+                    agregarAlCarrito(productoModal, cantidadModal, opcionElegida);
+                    cerrarDetalleProducto();
                   }}
-                  className="flex-1 py-3 px-4 bg-[#C8A29E] hover:bg-[#b58d89] text-white text-xs tracking-[0.15em] uppercase rounded-xl font-semibold transition"
+                  className="flex-1 bg-[#2C2C2C] text-white py-3.5 px-5 rounded-xl text-xs tracking-[0.18em] uppercase font-medium hover:bg-[#444] transition"
                 >
                   Agregar al carrito
                 </button>
@@ -273,125 +381,124 @@ export default function App() {
         </div>
       )}
       {carritoAbierto && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-[1px]" onClick={() => setCarritoAbierto(false)} />
-          <div className="relative z-10 w-full max-w-md bg-[#FDF2F4] h-full flex flex-col shadow-2xl">
-            <div className="px-6 py-5 border-b border-[#EDE6DD] flex items-center justify-between">
-              <div>
-                <h2 className="font-serif text-2xl text-[#2C2C2C]">Tu carrito</h2>
-                <p className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78]">PEDIDO POR WHATSAPP</p>
-              </div>
-              <button onClick={() => setCarritoAbierto(false)} className="p-2 text-[#6E655F]"><X className="w-5 h-5" /></button>
+        <div onClick={() => setCarritoAbierto(false)} className="fixed inset-0 z-50 bg-black/50 flex justify-end">
+          <div onClick={(e) => e.stopPropagation()} className="bg-[#FDF2F4] w-full max-w-md h-full flex flex-col shadow-2xl">
+            <div className="p-5 border-b border-[#EDE6DD] flex items-center justify-between">
+              <h3 className="font-serif text-xl">Tu carrito ({totalProductos})</h3>
+              <button onClick={() => setCarritoAbierto(false)} className="p-2">
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
               {carrito.length === 0 ? (
-                <div className="text-center py-16">
-                  <ShoppingBag className="w-10 h-10 mx-auto text-[#C8A29E] mb-3 stroke-[1.3]" />
-                  <p className="font-serif text-xl text-[#2C2C2C]">Tu carrito está vacío</p>
-                </div>
+                <p className="text-center text-sm text-[#8C7F78] py-10">Tu carrito está vacío.</p>
               ) : (
                 <>
-                  <div className="space-y-4">
-                    {carrito.map((item) => (
-                      <div key={item.id} className="flex gap-3 bg-white p-3 rounded-xl border border-[#EDE6DD]">
-                        <img src={item.imagen} alt={item.nombre} className="w-16 h-16 rounded-lg object-cover bg-[#F4EFEA]" />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start gap-2">
-                            <h4 className="font-serif text-base text-[#2C2C2C] truncate">{item.nombre}</h4>
-                            <button onClick={() => quitarProducto(item.id)} className="text-[10px] uppercase text-[#9A8F88] hover:text-red-500 flex items-center gap-0.5"><Trash2 className="w-3 h-3" /> QUITAR</button>
-                          </div>
-                          <p className="text-xs text-[#7A716B] mb-2">{formatearPrecio(item.precio)} c/u</p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center border border-[#E5DDD3] rounded-lg">
-                              <button onClick={() => cambiarCantidad(item.id, -1)} className="p-1.5"><Minus className="w-3 h-3" /></button>
-                              <span className="px-2.5 text-xs font-medium">{item.cantidad}</span>
-                              <button onClick={() => cambiarCantidad(item.id, 1)} className="p-1.5"><Plus className="w-3 h-3" /></button>
-                            </div>
-                            <span className="text-sm font-medium">{formatearPrecio(item.precio * item.cantidad)}</span>
-                          </div>
+                  {carrito.map((item) => (
+                    <div key={item.claveUnica} className="flex gap-3 bg-white p-3 rounded-2xl border border-[#EDE6DD]">
+                      <img src={item.imagen} alt={item.nombre} className="w-16 h-16 rounded-xl object-cover" />
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium">{item.nombre}</h4>
+                        {item.opcionElegida && (
+                          <p className="text-xs text-[#8C7F78]">Tono: {item.opcionElegida}</p>
+                        )}
+                        <p className="text-sm font-semibold mt-1">{formatearPrecio(item.precio * item.cantidad)}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <button onClick={() => cambiarCantidad(item.claveUnica, -1)} className="p-1 border rounded">
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="text-xs">{item.cantidad}</span>
+                          <button onClick={() => cambiarCantidad(item.claveUnica, 1)} className="p-1 border rounded">
+                            <Plus className="w-3 h-3" />
+                          </button>
+                          <button onClick={() => quitarProducto(item.claveUnica)} className="ml-auto text-red-400 p-1">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  <div>
-                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium mb-3">ELEGÍ CÓMO RECIBIR TU PEDIDO</p>
-                    <div className="space-y-2.5">
-                      <button type="button" onClick={() => setMetodoEntrega('envio')} className={`w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'envio' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}`}>
-                        <div className="flex justify-between mb-1"><span className="text-xs font-semibold flex items-center gap-1.5"><Truck className="w-3.5 h-3.5 text-[#C8A29E]" /> Envío a domicilio</span><span className="text-xs font-medium">$4.000</span></div>
-                        <p className="text-[11px] text-[#7A716B]">Dentro del anillo de circunvalación · Coordinar día y horario por WhatsApp</p>
+                    </div>
+                  ))}
+
+                  <div className="bg-white p-4 rounded-2xl border border-[#EDE6DD] space-y-3 text-xs">
+                    <p className="uppercase tracking-wider text-[#8C7F78] font-medium">Entrega</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setMetodoEntrega('envio')}
+                        className={`p-2.5 rounded-xl border ${metodoEntrega === 'envio' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
+                      >
+                        Envío ($4.000)
                       </button>
-                      <button type="button" onClick={() => setMetodoEntrega('retiro')} className={`w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'retiro' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}`}>
-                        <div className="flex justify-between mb-1"><span className="text-xs font-semibold flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-[#C8A29E]" /> Retiro por domicilio</span><span className="text-xs font-medium text-emerald-700">Gratis</span></div>
-                        <p className="text-[11px] text-[#7A716B]">Felix de Zuñiga 4637</p>
-                      </button>
-                      <button type="button" onClick={() => setMetodoEntrega('coordinar')} className={`w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'coordinar' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}`}>
-                        <div className="flex justify-between mb-1"><span className="text-xs font-semibold flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#C8A29E]" /> Entrega a coordinar</span><span className="text-xs text-[#7A716B]">A convenir</span></div>
-                        <p className="text-[11px] text-[#7A716B]">Consultanos por WhatsApp para coordinar la entrega</p>
+                      <button
+                        onClick={() => setMetodoEntrega('retiro')}
+                        className={`p-2.5 rounded-xl border ${metodoEntrega === 'retiro' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
+                      >
+                        Retiro (Gratis)
                       </button>
                     </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium">TUS DATOS</p>
-                    <input type="text" placeholder="Nombre y Apellido *" value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#E5DDD3] rounded-xl" />
+                    <p className="uppercase tracking-wider text-[#8C7F78] font-medium pt-1">Pago</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setMetodoPago('transferencia')}
+                        className={`p-2.5 rounded-xl border ${metodoPago === 'transferencia' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
+                      >
+                        Transferencia
+                      </button>
+                      <button
+                        onClick={() => setMetodoPago('efectivo')}
+                        className={`p-2.5 rounded-xl border ${metodoPago === 'efectivo' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
+                      >
+                        Efectivo
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Tu nombre"
+                      value={nombreCliente}
+                      onChange={(e) => setNombreCliente(e.target.value)}
+                      className="w-full p-2.5 border border-[#E5DDD3] rounded-xl"
+                    />
                     {metodoEntrega === 'envio' && (
-                      <input type="text" placeholder="Dirección y Barrio (calle, altura, piso/depto) *" value={direccionCliente} onChange={(e) => setDireccionCliente(e.target.value)} className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#E5DDD3] rounded-xl" />
+                      <input
+                        type="text"
+                        placeholder="Dirección de envío"
+                        value={direccionCliente}
+                        onChange={(e) => setDireccionCliente(e.target.value)}
+                        className="w-full p-2.5 border border-[#E5DDD3] rounded-xl"
+                      />
                     )}
-                  </div>
-
-                  <div>
-                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium mb-3">ELEGÍ CÓMO PAGAR</p>
-                    <div className="grid grid-cols-2 gap-2.5">
-                      <button type="button" onClick={() => setMetodoPago('transferencia')} className={`p-3 rounded-xl border text-left ${metodoPago === 'transferencia' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}`}>
-                        <p className="text-xs font-semibold">Transferencia</p>
-                        <p className="text-[10px] text-[#7A716B]">Luego de confirmar el stock</p>
-                      </button>
-                      <button type="button" onClick={() => setMetodoPago('efectivo')} className={`p-3 rounded-xl border text-left ${metodoPago === 'efectivo' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}`}>
-                        <p className="text-xs font-semibold">Efectivo</p>
-                        <p className="text-[10px] text-[#7A716B]">Para retiros o entregas coordinadas</p>
-                      </button>
-                    </div>
                   </div>
                 </>
               )}
             </div>
 
             {carrito.length > 0 && (
-              <div className="p-5 bg-white border-t border-[#EDE6DD] space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs tracking-[0.15em] uppercase text-[#6E655F]">TOTAL ESTIMADO</span>
-                  <span className="font-serif text-2xl font-semibold">{formatearPrecio(totalFinal)}</span>
+              <div className="p-5 border-t border-[#EDE6DD] bg-white space-y-3">
+                <div className="flex justify-between text-base font-semibold">
+                  <span>Total</span>
+                  <span>{formatearPrecio(totalFinal)}</span>
                 </div>
-                <div className="bg-[#F4EFEA] p-2.5 rounded-lg flex items-start gap-2 text-[11px] text-[#5C534E]">
-                  <Check className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
-                  <span>Tu pedido quedará pendiente de confirmación. Te escribimos por WhatsApp para confirmar stock y coordinar el pago.</span>
-                </div>
-                {!nombreCliente.trim() || (metodoEntrega === 'envio' && !direccionCliente.trim()) ? (
-                  <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-center">
-                    Completá tu nombre {metodoEntrega === 'envio' ? 'y dirección ' : ''}arriba para habilitar el envío por WhatsApp.
-                  </p>
-                ) : (
-                  <a
-                    href={`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(
-                      "Hola LUMINA! Pedido de " + nombreCliente + ": " +
-                      carrito.map((i) => i.cantidad + "x " + i.nombre + " (" + formatearPrecio(i.precio * i.cantidad) + ")").join(", ") +
-                      " | Entrega: " + (metodoEntrega === "envio" ? "Envio ($4.000) a " + direccionCliente : metodoEntrega === "retiro" ? "Retiro en Felix de Zuñiga 4637" : "A coordinar") +
-                      " | Pago: " + (metodoPago === "transferencia" ? "Transferencia" : "Efectivo") +
-                      " | Total estimado: " + formatearPrecio(totalFinal)
-                    )}`}
-                    className="block text-center w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm"
-                  >
-                    ENVIAR PEDIDO POR WHATSAPP
-                  </a>
-                )}
-                <p className="text-[10px] text-center text-[#8C7F78]">Primero confirmamos disponibilidad, después podés transferir.</p>
+                <button
+                  onClick={enviarPedidoWhatsApp}
+                  className="w-full bg-[#25D366] text-white py-3.5 rounded-xl text-xs tracking-[0.15em] uppercase font-semibold flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Enviar pedido por WhatsApp
+                </button>
               </div>
             )}
           </div>
         </div>
       )}
+
+      <a
+        href={linkWhatsAppConsulta}
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-5 right-5 z-30 bg-[#25D366] text-white p-3.5 rounded-full shadow-lg hover:scale-105 transition"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
     </div>
   );
 }
-
