@@ -60,6 +60,7 @@ export default function App() {
   const formatearPrecio = (valor) => new Intl.NumberFormat('es-AR', {
     style: 'currency', currency: 'ARS', maximumFractionDigits: 0,
   }).format(valor);
+
   const enviarPedidoWhatsApp = () => {
     if (!nombreCliente.trim()) {
       setErrorForm('Por favor, ingresá tu nombre y apellido.');
@@ -83,10 +84,10 @@ export default function App() {
     const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. Gracias!`;
 
     window.location.href = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(mensaje)}`;
-
   };
 
   const linkWhatsAppConsulta = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+
 
 
   return (
