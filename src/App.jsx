@@ -88,8 +88,6 @@ export default function App() {
 
   const linkWhatsAppConsulta = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
 
-
-
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#2C2C2C] font-sans">
       <div className="bg-[#EFE8E0] text-[#5C534E] text-[11px] tracking-[0.2em] uppercase py-2 overflow-hidden border-b border-[#E5DDD3]">
@@ -128,7 +126,7 @@ export default function App() {
           </div>
         )}
       </header>
-           <section className="px-4 sm:px-6 pt-6 pb-8">
+      <section className="px-4 sm:px-6 pt-6 pb-8">
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#F9ECE4] via-[#F5EFEA] to-[#EFE8F3] border border-[#EDE4DC] py-14 sm:py-24 px-6 text-center">
           <p className="text-[11px] tracking-[0.28em] uppercase text-[#8C7F78] mb-3">COLECCIÓN ESENCIAL</p>
           <h1 className="font-serif text-4xl sm:text-6xl font-normal text-[#2C2C2C] mb-4">Tus esenciales</h1>
