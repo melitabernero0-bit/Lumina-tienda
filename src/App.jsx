@@ -27,7 +27,10 @@ export default function App() {
   const [nombreCliente, setNombreCliente] = useState('');
   const [direccionCliente, setDireccionCliente] = useState('');
   const [errorForm, setErrorForm] = useState('');
-  
+  const [productoModal, setProductoModal] = useState(null);
+  const [opcionElegida, setOpcionElegida] = useState('');
+  const [cantidadModal, setCantidadModal] = useState(1);
+  const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
 
   const abrirDetalleProducto = (producto) => {
     setProductoModal(producto);
@@ -40,10 +43,7 @@ export default function App() {
     ? (productoModal.imagenes && productoModal.imagenes.length > 0 ? productoModal.imagenes : [productoModal.imagen])
     : [];
 
-  const [productoModal, setProductoModal] = useState(null);
-  const [opcionElegida, setOpcionElegida] = useState('');
-  const [cantidadModal, setCantidadModal] = useState(1);
-  const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
+  
 
   const productosFiltrados = categoriaActiva === 'TODAS'
     ? PRODUCTOS_INICIALES
