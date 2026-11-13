@@ -91,16 +91,19 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#2C2C2C] font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
       <div className="bg-[#EFE8E0] text-[#5C534E] text-[11px] tracking-[0.2em] uppercase py-2 overflow-hidden border-b border-[#E5DDD3]">
         <div className="animate-marquee">
           {Array.from({ length: 10 }).map((_, idx) => (
             <span key={idx} className="mx-6 whitespace-nowrap">SIN MÍNIMO DE COMPRA · ENVÍOS A DOMICILIO</span>
-          ))}
+
+    
+    
+    ))}
         </div>
       </div>
 
-      <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-sm border-b border-[#EDE6DD]">
+      <header className="sticky top-0 z-30 bg-[#FDF2F4]/95 backdrop-blur-sm border-b border-[#EDE6DD]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button onClick={() => setMenuMovilAbierto(!menuMovilAbierto)} className="sm:hidden p-2 text-[#2C2C2C]">
             {menuMovilAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -119,7 +122,7 @@ export default function App() {
         </div>
 
         {menuMovilAbierto && (
-          <div className="sm:hidden bg-[#FAF8F5] border-b border-[#EDE6DD] px-5 py-4 space-y-2">
+          <div className="sm:hidden bg-[#FDF2F4] border-b border-[#EDE6DD] px-5 py-4 space-y-2">
             <p className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78] pb-1">CATÁLOGO POR CATEGORÍA</p>
             <button onClick={() => seleccionarCategoria('TODAS')} className="block w-full text-left py-2 text-xs tracking-[0.15em] uppercase text-[#2C2C2C]">Ver todo el catálogo</button>
             {CATEGORIAS.map((cat) => (
@@ -130,10 +133,9 @@ export default function App() {
       </header>
       <section className="px-4 sm:px-6 pt-6 pb-8">
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#F9ECE4] via-[#F5EFEA] to-[#EFE8F3] border border-[#EDE4DC] py-14 sm:py-24 px-6 text-center">
-          <p className="text-[11px] tracking-[0.28em] uppercase text-[#8C7F78] mb-3">COLECCIÓN ESENCIAL</p>
           <h1 className="font-serif text-4xl sm:text-6xl font-normal text-[#2C2C2C] mb-4">Tus esenciales</h1>
           <p className="font-serif italic text-lg sm:text-xl text-[#6E655F] max-w-md mx-auto mb-8">Productos de belleza y cuidado para todos los días.</p>
-          <a href="#coleccion" className="inline-block border border-[#2C2C2C] px-7 py-3 text-xs tracking-[0.2em] uppercase text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FAF8F5] transition">VER COLECCIÓN</a>
+          <a href="#coleccion" className="inline-block border border-[#2C2C2C] px-7 py-3 text-xs tracking-[0.2em] uppercase text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FDF2F4] transition">VER COLECCIÓN</a>
         </div>
       </section>
 
@@ -209,7 +211,7 @@ export default function App() {
       {carritoAbierto && (
         <div className="fixed inset-0 z-50 flex justify-end">
           <div className="fixed inset-0 bg-black/30 backdrop-blur-[1px]" onClick={() => setCarritoAbierto(false)} />
-          <div className="relative z-10 w-full max-w-md bg-[#FAF8F5] h-full flex flex-col shadow-2xl">
+          <div className="relative z-10 w-full max-w-md bg-[#FDF2F4] h-full flex flex-col shadow-2xl">
             <div className="px-6 py-5 border-b border-[#EDE6DD] flex items-center justify-between">
               <div>
                 <h2 className="font-serif text-2xl text-[#2C2C2C]">Tu carrito</h2>
