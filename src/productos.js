@@ -1,7 +1,7 @@
 export const PRODUCTOS_INICIALES = [
   {
     id: 1,
-    nombre: "Gel postsolar Luyagus",
+    nombre: "Gel postsolar",
     precio: 3200,
     categoria: "CUIDADO PERSONAL",
     descripcion: "Gel postsolar Luyagus 30g.",
