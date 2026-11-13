@@ -5,8 +5,7 @@ export const PRODUCTOS_INICIALES = [
     precio: 3200,
     categoria: "CUIDADO PERSONAL",
     descripcion: "Gel postsolar Luyagus 30g.",
-    imagen: "imagen: "/1971F7F9-EC75-4626-BDF2-F3E1F19C473E.png",
-
+    imagen: "/1971F7F9-EC75-4626-BDF2-F3E1F19C473E.png"
   },
   {
     id: 2,
@@ -14,7 +13,8 @@ export const PRODUCTOS_INICIALES = [
     precio: 18500,
     categoria: "OJOS",
     descripcion: "9 tonos tierra mate y satinados de alta pigmentación.",
-    imagen: "https://unsplash.com"
+    imagen: "https://unsplash.com",
+    opciones: ["Tono 01 Warm", "Tono 02 Rose", "Tono 03 Bronze"]
   },
   {
     id: 3,
