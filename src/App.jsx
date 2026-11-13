@@ -86,7 +86,8 @@ export default function App() {
     window.location.href = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(mensaje)}`;
   };
 
-    const linkWhatsAppConsulta = "https://wa.me.";
+      const linkWhatsAppConsulta = "https://wa.me" + "5493515091049" + "?text=Hola%20Lumina!%20Quiero%20mas%20informacion";
+
 
 
   return (
@@ -304,25 +305,16 @@ export default function App() {
                   <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-center">
                     Completá tu nombre {metodoEntrega === 'envio' ? 'y dirección ' : ''}arriba para habilitar el envío por WhatsApp.
                   </p>
-                ) : (
+
+                                ) : (
                   <a
-                    href={"https://wa.me" + encodeURIComponent(
-                      "Hola LUMINA! Quiero hacer el siguiente pedido:\n\n" +
-                      "Cliente: " + nombreCliente + "\n\n" +
-                      "Productos:\n" +
-                      carrito.map((i) => "- " + i.cantidad + "x " + i.nombre + " (" + formatearPrecio(i.precio * i.cantidad) + ")").join("\n") +
-                      "\n\nEntrega: " + (
-                        metodoEntrega === "envio"
-                          ? "Envio a domicilio ($4.000) - Dir: " + direccionCliente
-                          : metodoEntrega === "retiro"
-                          ? "Retiro por domicilio (Felix de Zuniga 4637)"
-                          : "A coordinar"
-                      ) +
-                      "\nPago: " + (metodoPago === "transferencia" ? "Transferencia" : "Efectivo") +
-                      "\nTotal estimado: " + formatearPrecio(totalFinal)
+                    href={"https://wa.me" + "5493515091049" + "?text=" + encodeURIComponent(
+                      "Hola LUMINA! Pedido de " + nombreCliente + ": " +
+                      carrito.map((i) => i.cantidad + "x " + i.nombre + " (" + formatearPrecio(i.precio * i.cantidad) + ")").join(", ") +
+                      " | Entrega: " + (metodoEntrega === "envio" ? "Envio ($4.000) a " + direccionCliente : metodoEntrega === "retiro" ? "Retiro en Felix de Zuñiga 4637" : "A coordinar") +
+                      " | Pago: " + (metodoPago === "transferencia" ? "Transferencia" : "Efectivo") +
+                      " | Total estimado: " + formatearPrecio(totalFinal)
                     )}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block text-center w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm"
                   >
                     ENVIAR PEDIDO POR WHATSAPP
@@ -338,4 +330,5 @@ export default function App() {
   );
 }
 
-                      
+
+                  
