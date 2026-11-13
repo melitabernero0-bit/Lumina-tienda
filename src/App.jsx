@@ -98,7 +98,7 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
       maximumFractionDigits: 0,
     }).format(valor);
 
-  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=Hola%20Lumina!%20Quiero%20mas%20informacion`;
+const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=Hola%20Lumina!%20Quiero%20mas%20informacion`;
 
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) return;
@@ -114,7 +114,7 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
     if (nombreCliente) texto += `\nNombre: ${nombreCliente}`;
     if (metodoEntrega === 'envio' && direccionCliente) texto += `\nDirección: ${direccionCliente}`;
 
-    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, '_blank');
+window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, '_blank');
   };
 
   return (
