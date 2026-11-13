@@ -291,7 +291,7 @@ export default function App() {
               )}
             </div>
 
-            {carrito.length > 0 && (
+                        {carrito.length > 0 && (
               <div className="p-5 bg-white border-t border-[#EDE6DD] space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-xs tracking-[0.15em] uppercase text-[#6E655F]">TOTAL ESTIMADO</span>
@@ -301,8 +301,30 @@ export default function App() {
                   <Check className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
                   <span>Tu pedido quedará pendiente de confirmación. Te escribimos por WhatsApp para confirmar stock y coordinar el pago.</span>
                 </div>
-                {errorForm && <p className="text-xs text-red-600 font-medium">{errorForm}</p>}
-                <button onClick={enviarPedidoWhatsApp} className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm">ENVIAR PEDIDO POR WHATSAPP</button>
+                {!nombreCliente.trim() || (metodoEntrega === 'envio' && !direccionCliente.trim()) ? (
+                  <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-center">
+                    Completá tu nombre {metodoEntrega === 'envio' ? 'y dirección ' : ''}arriba para habilitar el envío por WhatsApp.
+                  </p>
+                ) : (
+                  <a
+                    href={`https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(
+                      `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${carrito
+                        .map((i) => `• ${i.cantidad}x ${i.nombre} (${formatearPrecio(i.precio * i.cantidad)})`)
+                        .join('\n')}\n\n*Entrega:* ${
+                        metodoEntrega === 'envio'
+                          ? `Envío a domicilio ($4.000) - Dir: ${direccionCliente}`
+                          : metodoEntrega === 'retiro'
+                          ? 'Retiro por domicilio (Felix de Zuñiga 4637)'
+                          : 'A coordinar'
+                      }\n*Pago:* ${metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo'}\n*Total estimado:* ${formatearPrecio(totalFinal)}`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm"
+                  >
+                    ENVIAR PEDIDO POR WHATSAPP
+                  </a>
+                )}
                 <p className="text-[10px] text-center text-[#8C7F78]">Primero confirmamos disponibilidad, después podés transferir.</p>
               </div>
             )}
