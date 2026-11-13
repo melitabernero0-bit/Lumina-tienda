@@ -5,7 +5,8 @@ export const PRODUCTOS_INICIALES = [
     precio: 3200,
     categoria: "CUIDADO PERSONAL",
     descripcion: "Gel postsolar Luyagus 30g.",
-    imagen: "/1971F7F9-EC75-4626-BDF2-F3E1F19C473E.png"
+    imagen: "imagen: "/1971F7F9-EC75-4626-BDF2-F3E1F19C473E.png",
+
   },
   {
     id: 2,
