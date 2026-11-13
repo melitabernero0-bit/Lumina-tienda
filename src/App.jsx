@@ -82,10 +82,12 @@ export default function App() {
     const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
     const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. Gracias!`;
 
-    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    window.location.href = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(mensaje)}`;
+
   };
 
-  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+  const linkWhatsAppConsulta = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#2C2C2C] font-sans">
