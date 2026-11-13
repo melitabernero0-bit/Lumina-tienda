@@ -47,15 +47,15 @@ const enviarPedidoWhatsApp = () => {
 if (!nombreCliente.trim()) { setErrorForm('Por favor, ingresá tu nombre y apellido.'); return; }
 if (metodoEntrega === 'envio' && !direccionCliente.trim()) { setErrorForm('Por favor, ingresá tu dirección y barrio para el envío.'); return; }
 setErrorForm('');
-const lineasProductos = carrito.map((item) => • ${item.cantidad}x ${item.nombre} (${formatearPrecio(item.precio * item.cantidad)})).join('\n');
+const lineasProductos = carrito.map((item) => '• ' + item.cantidad + 'x ' + item.nombre + ' (' + formatearPrecio(item.precio * item.cantidad) + ')').join('\n');
 let textoEntrega = 'Entrega a coordinar por WhatsApp';
-if (metodoEntrega === 'envio') textoEntrega = Envío a domicilio ($4.000)\nDirección: ${direccionCliente};
+if (metodoEntrega === 'envio') textoEntrega = 'Envío a domicilio ($4.000)\nDirección: ' + direccionCliente;
 if (metodoEntrega === 'retiro') textoEntrega = 'Retiro por domicilio (Gratis · Felix de Zuñiga 4637)';
 const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
-const mensaje = Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. Gracias!;
-window.open(https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}, '_blank');
+const mensaje = 'Hola LUMINA! Quiero hacer el siguiente pedido:\n\nCliente: ' + nombreCliente + '\n\nProductos:\n' + lineasProductos + '\n\nEntrega: ' + textoEntrega + '\nForma de pago: ' + textoPago + '\nTotal estimado: ' + formatearPrecio(totalFinal) + '\n\nQuedo a la espera de la confirmación de stock. Gracias!';
+window.open('wa.me' + WHATSAPP_NUMERO + '?text=' + encodeURIComponent(mensaje), '_blank');
 };
-const linkWhatsAppConsulta = https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')};
+const linkWhatsAppConsulta = 'wa.me' + WHATSAPP_NUMERO + '?text=' + encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.');
 return (
 
 
@@ -94,7 +94,7 @@ Categorías
 
 <button onClick={() => setDesplegableCatMovil(!desplegableCatMovil)} className="w-full flex items-center justify-between px-4 py-3 bg-[#F4EFEA] border border-[#E5DDD3] rounded-xl text-xs tracking-[0.16em] uppercase text-[#2C2C2C]">
 {categoriaActiva === 'TODAS' ? 'Elegir categoría (Todas)' : categoriaActiva}
-<ChevronDown className={w-4 h-4 text-[#8C7F78] transition-transform ${desplegableCatMovil ? 'rotate-180' : ''}} />
+<ChevronDown className={'w-4 h-4 text-[#8C7F78] transition-transform ' + (desplegableCatMovil ? 'rotate-180' : '')} />
 
 {desplegableCatMovil && (
 
@@ -111,10 +111,10 @@ const Icono = cat.icono;
 const activa = categoriaActiva === cat.id;
 return (
 <button key={cat.id} onClick={() => seleccionarCategoria(cat.id)} className="group flex flex-col items-center gap-2.5">
-<div className={w-20 h-20 rounded-full flex items-center justify-center transition border ${activa ? 'bg-[#C8A29E] text-white border-[#C8A29E]' : 'bg-[#F4EFEA] text-[#5C534E] border-[#E8DFD5] group-hover:border-[#C8A29E]'}}>
+<div className={'w-20 h-20 rounded-full flex items-center justify-center transition border ' + (activa ? 'bg-[#C8A29E] text-white border-[#C8A29E]' : 'bg-[#F4EFEA] text-[#5C534E] border-[#E8DFD5] group-hover:border-[#C8A29E]')}>
 
 
-<span className={text-[11px] tracking-[0.15em] uppercase ${activa ? 'font-semibold text-[#2C2C2C]' : 'text-[#6E655F]'}}>{cat.nombre}
+<span className={'text-[11px] tracking-[0.15em] uppercase ' + (activa ? 'font-semibold text-[#2C2C2C]' : 'text-[#6E655F]')}>{cat.nombre}
 
 );
 })}
@@ -188,15 +188,15 @@ Tu carrito está vacío
 
 ELEGÍ CÓMO RECIBIR TU PEDIDO
 
-<button type="button" onClick={() => setMetodoEntrega('envio')} className={w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'envio' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}}>
+<button type="button" onClick={() => setMetodoEntrega('envio')} className={'w-full text-left p-3.5 rounded-xl border ' + (metodoEntrega === 'envio' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]')}>
  Envío a domicilio$4.000
 Dentro del anillo de circunvalación · Coordinar día y horario por WhatsApp
 
-<button type="button" onClick={() => setMetodoEntrega('retiro')} className={w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'retiro' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}}>
+<button type="button" onClick={() => setMetodoEntrega('retiro')} className={'w-full text-left p-3.5 rounded-xl border ' + (metodoEntrega === 'retiro' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]')}>
  Retiro por domicilioGratis
 Felix de Zuñiga 4637
 
-<button type="button" onClick={() => setMetodoEntrega('coordinar')} className={w-full text-left p-3.5 rounded-xl border ${metodoEntrega === 'coordinar' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}}>
+<button type="button" onClick={() => setMetodoEntrega('coordinar')} className={'w-full text-left p-3.5 rounded-xl border ' + (metodoEntrega === 'coordinar' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]')}>
  Entrega a coordinarA convenir
 Consultanos por WhatsApp para coordinar la entrega
 
@@ -210,11 +210,11 @@ TUS DATOS
 
 ELEGÍ CÓMO PAGAR
 
-<button type="button" onClick={() => setMetodoPago('transferencia')} className={p-3 rounded-xl border text-left ${metodoPago === 'transferencia' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}}>
+<button type="button" onClick={() => setMetodoPago('transferencia')} className={'p-3 rounded-xl border text-left ' + (metodoPago === 'transferencia' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]')}>
 Transferencia
 Luego de confirmar el stock
 
-<button type="button" onClick={() => setMetodoPago('efectivo')} className={p-3 rounded-xl border text-left ${metodoPago === 'efectivo' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]'}}>
+<button type="button" onClick={() => setMetodoPago('efectivo')} className={'p-3 rounded-xl border text-left ' + (metodoPago === 'efectivo' ? 'bg-[#F4EFEA] border-[#C8A29E]' : 'bg-white border-[#EDE6DD]')}>
 Efectivo
 Para retiros o entregas coordinadas
 
@@ -244,3 +244,6 @@ Primero confirmamos disponibilidad, después podés transferir.
 
 );
 }
+4. Hacé clic en Confirmar cambios... -> Confirmar cambios en GitHub.
+5. Ahora sí, volvé a Vercel y hacé clic en Desplegar / Redesplegar. ¡Esta vez va a pasar en verde sin ningún error!
+Avisame cuando le des a Confirmar cambios en GitHub y a Desplegar en Vercel. Ya debería abrirse tu tienda sin problemas.
