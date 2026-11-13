@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import {
   ShoppingBag, Eye, Smile, Sparkles, Brush, Heart, X,
   Plus, Minus, Trash2, Check, MessageCircle, MapPin,
-  Truck, Calendar, ChevronDown, Menu
+  Truck, Calendar, ChevronDown, ChevronLeft, ChevronRight, Menu
 } from 'lucide-react';
+
 import { PRODUCTOS_INICIALES } from './productos.js';
 
 const CATEGORIAS = [
@@ -27,6 +28,22 @@ export default function App() {
   const [nombreCliente, setNombreCliente] = useState('');
   const [direccionCliente, setDireccionCliente] = useState('');
   const [errorForm, setErrorForm] = useState('');
+  const [productoModal, setProductoModal] = useState(null);
+  const [opcionElegida, setOpcionElegida] = useState('');
+  const [cantidadModal, setCantidadModal] = useState(1);
+  const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
+
+  const abrirDetalleProducto = (producto) => {
+    setProductoModal(producto);
+    setCantidadModal(1);
+    setFotoActivaIdx(0);
+    setOpcionElegida(producto.opciones && producto.opciones.length > 0 ? producto.opciones : '');
+  };
+
+  const fotosModal = productoModal
+    ? (productoModal.imagenes && productoModal.imagenes.length > 0 ? productoModal.imagenes : [productoModal.imagen])
+    : [];
+
 
   const productosFiltrados = categoriaActiva === 'TODAS'
     ? PRODUCTOS_INICIALES
