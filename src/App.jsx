@@ -86,7 +86,7 @@ export default function App() {
     window.location.href = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(mensaje)}`;
   };
 
-      const linkWhatsAppConsulta = "https://wa.me" + "5493515091049" + "?text=Hola%20Lumina!%20Quiero%20mas%20informacion";
+      const linkWhatsAppConsulta = "https://wa.me/" + "5493515091049" + "?text=Hola%20Lumina!%20Quiero%20mas%20informacion";
 
 
 
@@ -308,7 +308,7 @@ export default function App() {
 
                                 ) : (
                   <a
-                    href={"https://wa.me" + "5493515091049" + "?text=" + encodeURIComponent(
+                    href={"https://wa.me/" + "5493515091049" + "?text=" + encodeURIComponent(
                       "Hola LUMINA! Pedido de " + nombreCliente + ": " +
                       carrito.map((i) => i.cantidad + "x " + i.nombre + " (" + formatearPrecio(i.precio * i.cantidad) + ")").join(", ") +
                       " | Entrega: " + (metodoEntrega === "envio" ? "Envio ($4.000) a " + direccionCliente : metodoEntrega === "retiro" ? "Retiro en Felix de Zuñiga 4637" : "A coordinar") +
