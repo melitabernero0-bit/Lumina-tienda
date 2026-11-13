@@ -37,7 +37,7 @@ export default function App() {
     setCantidadModal(1);
     setFotoActivaIdx(0);
     const opcionesDisponibles = producto.opciones || producto.tonos || producto.colores || [];
-    setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
+setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
   };
 
   const cerrarDetalleProducto = () => {
