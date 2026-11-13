@@ -183,7 +183,7 @@ export default function App() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {productosFiltrados.map((producto) => (
             <div key={producto.id} className="bg-white rounded-xl border border-[#EDE6DD] overflow-hidden flex flex-col justify-between group">
-              <div>
+                            <div onClick={() => abrirDetalleProducto(producto)} className="cursor-pointer">
                 <div className="aspect-square bg-[#F4EFEA] overflow-hidden">
                   <img src={producto.imagen} alt={producto.nombre} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                 </div>
@@ -195,7 +195,8 @@ export default function App() {
               </div>
               <div className="px-3 pb-3 sm:px-4 sm:pb-4 pt-1 flex flex-col gap-2">
                 <span className="text-sm sm:text-base font-medium text-[#2C2C2C]">{formatearPrecio(producto.precio)}</span>
-                <button onClick={() => agregarAlCarrito(producto)} className="w-full py-2 px-3 bg-[#F4EFEA] hover:bg-[#C8A29E] text-[#2C2C2C] hover:text-white text-[11px] tracking-[0.15em] uppercase rounded-lg transition font-medium">Agregar</button>
+                                <button onClick={() => producto.opciones && producto.opciones.length > 0 ? abrirDetalleProducto(producto) : agregarAlCarrito(producto)} className="w-full py-2 px-3 bg-[#F4EFEA] hover:bg-[#C8A29E] text-[#2C2C2C] hover:text-white text-[11px] tracking-[0.15em] uppercase rounded-lg transition font-medium">{producto.opciones && producto.opciones.length > 0 ? 'Elegir tono' : 'Agregar'}</button>
+
               </div>
             </div>
           ))}
@@ -207,6 +208,82 @@ export default function App() {
       <a href={linkWhatsAppConsulta} target="_blank" rel="noopener noreferrer" className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-[#25D366] text-white shadow-lg hover:scale-105 transition flex items-center justify-center">
         <MessageCircle className="w-6 h-6 fill-white text-[#25D366]" />
       </a>
+
+            {productoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-[2px]" onClick={() => setProductoModal(null)} />
+          <div className="relative z-10 bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border border-[#EDE6DD] grid grid-cols-1 md:grid-cols-2">
+            <button onClick={() => setProductoModal(null)} className="absolute top-3 right-3 z-20 p-2 bg-white/90 rounded-full text-[#2C2C2C] shadow">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="bg-[#F4EFEA] p-4 flex flex-col justify-between">
+              <div className="relative aspect-square rounded-xl overflow-hidden bg-white">
+                <img src={fotosModal.at(fotoActivaIdx)} alt={productoModal.nombre} className="w-full h-full object-contain" />
+                {fotosModal.length > 1 && (
+                  <>
+                    <button onClick={() => setFotoActivaIdx((p) => (p === 0 ? fotosModal.length - 1 : p - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/85 rounded-full shadow">
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setFotoActivaIdx((p) => (p === fotosModal.length - 1 ? 0 : p + 1))} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/85 rounded-full shadow">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+              {fotosModal.length > 1 && (
+                <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+                  {fotosModal.map((foto, idx) => (
+                    <button key={idx} onClick={() => setFotoActivaIdx(idx)} className={`w-14 h-14 rounded-lg overflow-hidden border-2 shrink-0 ${fotoActivaIdx === idx ? 'border-[#2C2C2C]' : 'border-transparent opacity-60'}`}>
+                      <img src={foto} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-6 flex flex-col justify-between space-y-5">
+              <div>
+                <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A8F88] mb-1">{productoModal.categoria}</p>
+                <h2 className="font-serif text-2xl text-[#2C2C2C] mb-2">{productoModal.nombre}</h2>
+                <p className="text-xl font-semibold text-[#2C2C2C] mb-4">{formatearPrecio(productoModal.precio)}</p>
+                {productoModal.descripcion && <p className="text-xs text-[#6E655F] leading-relaxed mb-5">{productoModal.descripcion}</p>}
+                {productoModal.opciones && productoModal.opciones.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-[#2C2C2C] mb-2">Opción: <span className="font-semibold">{opcionElegida}</span></p>
+                    <div className="flex flex-wrap gap-2">
+                      {productoModal.opciones.map((op) => (
+                        <button key={op} type="button" onClick={() => setOpcionElegida(op)} className={`px-3 py-1.5 text-xs rounded-lg border transition ${opcionElegida === op ? 'border-[#2C2C2C] bg-[#2C2C2C] text-white font-medium' : 'border-[#E5DDD3] bg-white text-[#2C2C2C]'}`}>
+                          {op}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="pt-3 border-t border-[#EDE6DD] flex items-center gap-3">
+                <div className="flex items-center border border-[#E5DDD3] rounded-xl">
+                  <button onClick={() => setCantidadModal((c) => Math.max(1, c - 1))} className="p-2.5"><Minus className="w-3.5 h-3.5" /></button>
+                  <span className="px-3 text-xs font-semibold">{cantidadModal}</span>
+                  <button onClick={() => setCantidadModal((c) => c + 1)} className="p-2.5"><Plus className="w-3.5 h-3.5" /></button>
+                </div>
+                <button
+                  onClick={() => {
+                    const nombreFinal = opcionElegida ? productoModal.nombre + ' (' + opcionElegida + ')' : productoModal.nombre;
+                    const idFinal = opcionElegida ? productoModal.id + '-' + opcionElegida : productoModal.id;
+                    for (let i = 0; i < cantidadModal; i++) {
+                      agregarAlCarrito({ ...productoModal, id: idFinal, nombre: nombreFinal });
+                    }
+                    setProductoModal(null);
+                  }}
+                  className="flex-1 py-3 px-4 bg-[#C8A29E] hover:bg-[#b58d89] text-white text-xs tracking-[0.15em] uppercase rounded-xl font-semibold transition"
+                >
+                  Agregar al carrito
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {carritoAbierto && (
         <div className="fixed inset-0 z-50 flex justify-end">
