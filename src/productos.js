@@ -9,7 +9,7 @@ export const PRODUCTOS_INICIALES = [
 • Mentol: Aporta un efecto frío refrescante inmediato.
 • Formato bolsillo (30 g): Ideal para llevar en el bolso, cartera o de viaje.
 Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
-    imagen: "/gelpostsolar.png"
+    imagen: "/gelpostsolar.jpeg"
   },
   {
     id: 2,
