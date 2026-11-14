@@ -50,12 +50,19 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
     : [];
 
   const opcionesModal = productoModal
-    ? (productoModal.opciones || productoModal.tonos || productoModal.colores || [])
+    ? (productoModa
+       
+       l.opciones || productoModal.tonos || productoModal.colores || [])
     : [];
 
-  const productosFiltrados = categoriaActiva === 'TODAS'
+    const productosFiltrados = categoriaActiva === 'TODAS'
     ? PRODUCTOS_INICIALES
-    : PRODUCTOS_INICIALES.filter((p) => p.categoria === categoriaActiva);
+    : PRODUCTOS_INICIALES.filter((p) => 
+        Array.isArray(p.categoria) 
+          ? p.categoria.includes(categoriaActiva) 
+          : p.categoria === categoriaActiva
+      );
+
 
   const seleccionarCategoria = (id) => {
     setCategoriaActiva(id);
