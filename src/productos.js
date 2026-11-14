@@ -115,7 +115,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     id: 14,
     nombre: "Lipgloss con llavero",
     precio: 4000,
-    categoria: ["ACCESORIOS", "LABIOS"],
+    categoria: ["LABIOS"],
     descripcion: "",
     imagen: "/lipglossllaveropink21.jpeg",
     opciones: [] // Completar tonos
