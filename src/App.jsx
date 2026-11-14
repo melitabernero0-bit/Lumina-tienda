@@ -104,7 +104,7 @@ export default function App() {
       maximumFractionDigits: 0,
     }).format(valor);
 
-  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
 
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) return;
@@ -129,14 +129,14 @@ export default function App() {
     let textoEntrega = 'Entrega a coordinar por WhatsApp';
     if (metodoEntrega === 'envio') textoEntrega = `Envío a domicilio ($4.000)\nDirección: ${direccionCliente}`;
     if (metodoEntrega === 'retiro') textoEntrega = 'Retiro por domicilio (Gratis · Felix de Zuñiga 4637)';
-    if (metodoEntrega === 'coordinar') textoEntrega = 'Entrega a coordinar por WhatsApp';
+    if (metodoEntrega === 'coordinar') textoEntrega = 'Entrega a coordinar';
 
     const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
     const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
 
-    const urlWhatsApp = `https://whatsapp.com{WHATSAPP_NUMERO}&text=${encodeURIComponent(mensaje)}`;
-    window.location.href = urlWhatsApp;
+    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
   };
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
@@ -416,12 +416,12 @@ export default function App() {
       {carritoAbierto && (
         <div onClick={() => setCarritoAbierto(false)} className="fixed inset-0 z-50 bg-black/50 flex justify-end">
           <div onClick={(e) => e.stopPropagation()} className="bg-[#FAF8F5] w-full max-w-md h-full flex flex-col shadow-2xl">
-                        <div className="p-5 bg-white border-b border-[#D8CFC4] flex items-center justify-between">
+                                    <div className="p-5 bg-white border-b border-[#EDE6DD] flex items-center justify-between">
               <div>
-                <h3 className="font-serif text-2xl font-semibold text-[#1A1A1A]">Tu pedido</h3>
-                <p className="text-xs font-medium text-[#3D3734]">{totalProductos} {totalProductos === 1 ? 'producto' : 'productos'}</p>
+                <h3 className="font-serif text-2xl text-[#3A3532]">Tu pedido</h3>
+                <p className="text-xs text-[#6E655F]">{totalProductos} {totalProductos === 1 ? 'producto' : 'productos'}</p>
               </div>
-              <button onClick={() => setCarritoAbierto(false)} className="p-2 text-[#1A1A1A] hover:opacity-70">
+              <button onClick={() => setCarritoAbierto(false)} className="p-2 text-[#5C534E] hover:text-[#2C2C2C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -430,98 +430,86 @@ export default function App() {
               {carrito.length === 0 ? (
                 <div className="text-center py-16 space-y-3">
                   <ShoppingBag className="w-10 h-10 text-[#C8A29E] mx-auto stroke-[1.2]" />
-                  <p className="font-serif text-xl text-[#1A1A1A]">Tu carrito está vacío</p>
-                  <p className="text-xs text-[#3D3734]">Explorá la colección y agregá tus productos favoritos.</p>
+                  <p className="font-serif text-xl text-[#3A3532]">Tu carrito está vacío</p>
+                  <p className="text-xs text-[#6E655F]">Explorá la colección y agregá tus productos favoritos.</p>
                 </div>
               ) : (
                 <>
                   <div className="space-y-3">
                     {carrito.map((item) => (
-                      <div key={item.claveUnica} className="flex gap-3 bg-white p-3.5 rounded-xl border border-[#D8CFC4]">
+                      <div key={item.claveUnica} className="flex gap-3 bg-white p-3.5 rounded-xl border border-[#E5DDD3]">
                         <img src={item.imagen} alt={item.nombre} className="w-16 h-16 rounded-lg object-cover bg-[#F4EFEA] shrink-0" />
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-2">
-                            <h4 className="font-serif text-base font-medium text-[#1A1A1A] truncate">{item.nombre}</h4>
-                            <button onClick={() => quitarProducto(item.claveUnica)} className="text-[11px] font-medium uppercase text-[#4A433E] hover:text-red-600 flex items-center gap-0.5 shrink-0">
-                              <Trash2 className="w-3.5 h-3.5" /> QUITAR
+                            <h4 className="font-serif text-base text-[#3A3532] truncate">{item.nombre}</h4>
+                            <button onClick={() => quitarProducto(item.claveUnica)} className="text-[10px] uppercase text-[#7A716B] hover:text-red-500 flex items-center gap-0.5 shrink-0">
+                              <Trash2 className="w-3 h-3" /> QUITAR
                             </button>
                           </div>
                           {item.opcionElegida && (
-                            <p className="text-xs text-[#3D3734] font-medium">Tono: {item.opcionElegida}</p>
+                            <p className="text-xs text-[#6E655F] font-medium">Tono: {item.opcionElegida}</p>
                           )}
-                          <p className="text-xs text-[#3D3734] mb-2">{formatearPrecio(item.precio)} c/u</p>
+                          <p className="text-xs text-[#6E655F] mb-2">{formatearPrecio(item.precio)} c/u</p>
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center border border-[#D8CFC4] rounded-lg">
-                              <button onClick={() => cambiarCantidad(item.claveUnica, -1)} className="p-1.5 text-[#1A1A1A]"><Minus className="w-3 h-3" /></button>
-                              <span className="px-2.5 text-xs font-semibold text-[#1A1A1A]">{item.cantidad}</span>
-                              <button onClick={() => cambiarCantidad(item.claveUnica, 1)} className="p-1.5 text-[#1A1A1A]"><Plus className="w-3 h-3" /></button>
+                            <div className="flex items-center border border-[#E5DDD3] rounded-lg text-[#3A3532]">
+                              <button onClick={() => cambiarCantidad(item.claveUnica, -1)} className="p-1.5"><Minus className="w-3 h-3" /></button>
+                              <span className="px-2.5 text-xs font-medium">{item.cantidad}</span>
+                              <button onClick={() => cambiarCantidad(item.claveUnica, 1)} className="p-1.5"><Plus className="w-3 h-3" /></button>
                             </div>
-                            <span className="text-sm font-semibold text-[#1A1A1A]">{formatearPrecio(item.precio * item.cantidad)}</span>
+                            <span className="text-sm font-medium text-[#3A3532]">{formatearPrecio(item.precio * item.cantidad)}</span>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="bg-white p-4 rounded-xl border border-[#D8CFC4] space-y-3">
-                    <p className="text-xs tracking-[0.15em] uppercase text-[#1A1A1A] font-semibold">1. DATOS DE CONTACTO</p>
-                    <input
-                      type="text"
-                      placeholder="Tu nombre y apellido *"
-                      value={nombreCliente}
-                      onChange={(e) => setNombreCliente(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs text-[#1A1A1A] placeholder-[#5C534E] border border-[#D8CFC4] rounded-xl focus:outline-none focus:border-[#2C2C2C]"
-                    />
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-[#D8CFC4] space-y-3">
-                    <p className="text-xs tracking-[0.15em] uppercase text-[#1A1A1A] font-semibold">2. MÉTODO DE ENTREGA</p>
-                    <div className="grid grid-cols-1 gap-2.5">
+                  
+                                   <div className="bg-white p-4 rounded-xl border border-[#E5DDD3] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C534E] font-medium">1. MÉTODO DE ENTREGA</p>
+                    <div className="grid grid-cols-1 gap-2">
                       <button
                         onClick={() => setMetodoEntrega('envio')}
                         className={`p-3 rounded-xl border text-left transition flex items-start gap-2.5 ${
-                          metodoEntrega === 'envio' ? 'border-[#2C2C2C] bg-[#FAF8F5] ring-1 ring-[#2C2C2C]' : 'border-[#D8CFC4] hover:border-[#2C2C2C]'
+                          metodoEntrega === 'envio' ? 'border-[#8C7F78] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
                         }`}
                       >
-                        <Truck className="w-4 h-4 text-[#1A1A1A] shrink-0 mt-0.5" />
+                        <Truck className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5 stroke-[1.5]" />
                         <div className="flex-1">
                           <div className="flex justify-between items-center">
-                            <span className="text-xs font-semibold text-[#1A1A1A]">Envío a domicilio</span>
-                            <span className="text-xs font-bold text-[#1A1A1A]">$4.000</span>
+                            <span className="text-xs font-medium text-[#3A3532]">Envío a domicilio</span>
+                            <span className="text-xs font-semibold text-[#3A3532]">$4.000</span>
                           </div>
-                          <p className="text-[11px] text-[#3D3734] mt-0.5">Entrega en Córdoba Capital</p>
+                          <p className="text-[11px] text-[#6E655F]">Entrega en Córdoba Capital</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => setMetodoEntrega('retiro')}
                         className={`p-3 rounded-xl border text-left transition flex items-start gap-2.5 ${
-                          metodoEntrega === 'retiro' ? 'border-[#2C2C2C] bg-[#FAF8F5] ring-1 ring-[#2C2C2C]' : 'border-[#D8CFC4] hover:border-[#2C2C2C]'
+                          metodoEntrega === 'retiro' ? 'border-[#8C7F78] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
                         }`}
                       >
-                        <MapPin className="w-4 h-4 text-[#1A1A1A] shrink-0 mt-0.5" />
+                        <MapPin className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5 stroke-[1.5]" />
                         <div className="flex-1">
                           <div className="flex justify-between items-center">
-                            <span className="text-xs font-semibold text-[#1A1A1A]">Retiro por domicilio</span>
-                            <span className="text-xs font-bold text-[#1B9E4B]">Gratis</span>
+                            <span className="text-xs font-medium text-[#3A3532]">Retiro por domicilio</span>
+                            <span className="text-xs font-semibold text-[#25D366]">Gratis</span>
                           </div>
-                          <p className="text-[11px] text-[#3D3734] mt-0.5">Felix de Zuñiga 4637 (a coordinar)</p>
+                          <p className="text-[11px] text-[#6E655F]">Felix de Zuñiga 4637 (a coordinar)</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => setMetodoEntrega('coordinar')}
-                        className={`p-3 rounded-xl border text-left transition flex items-start gap-2.5 ${
-                          metodoEntrega === 'coordinar' ? 'border-[#2C2C2C] bg-[#FAF8F5] ring-1 ring-[#2C2C2C]' : 'border-[#D8CFC4] hover:border-[#2C2C2C]'
+                        className={`p-3 rounded-xl border text-left transition flex items-center gap-2.5 ${
+                          metodoEntrega === 'coordinar' ? 'border-[#8C7F78] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
                         }`}
                       >
-                        <MessageCircle className="w-4 h-4 text-[#1A1A1A] shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs font-semibold text-[#1A1A1A]">Entrega a coordinar</span>
-                            <span className="text-xs font-semibold text-[#3D3734]">A convenir</span>
-                          </div>
-                          <p className="text-[11px] text-[#3D3734] mt-0.5">Acordamos punto de encuentro o envío por WhatsApp</p>
-                        </div>
+                        <svg className="w-4 h-4 text-[#C8A29E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" />
+                          <polyline points="12 7 12 12 15 14" />
+                        </svg>
+                        <span className="text-xs font-medium text-[#3A3532]">Entrega a coordinar</span>
                       </button>
                     </div>
 
@@ -531,43 +519,53 @@ export default function App() {
                         placeholder="Tu dirección y barrio para el envío *"
                         value={direccionCliente}
                         onChange={(e) => setDireccionCliente(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-xs text-[#1A1A1A] placeholder-[#5C534E] border border-[#D8CFC4] rounded-xl focus:outline-none focus:border-[#2C2C2C]"
+                        className="w-full px-3.5 py-2.5 text-xs text-[#3A3532] placeholder-[#7A716B] border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#8C7F78]"
                       />
                     )}
                   </div>
 
-                  <div className="bg-white p-4 rounded-xl border border-[#D8CFC4] space-y-3">
-                    <p className="text-xs tracking-[0.15em] uppercase text-[#1A1A1A] font-semibold">3. FORMA DE PAGO</p>
-                    <div className="grid grid-cols-2 gap-2.5">
+                  <div className="bg-white p-4 rounded-xl border border-[#E5DDD3] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C534E] font-medium">2. FORMA DE PAGO</p>
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setMetodoPago('transferencia')}
                         className={`p-3 rounded-xl border text-left transition ${
-                          metodoPago === 'transferencia' ? 'border-[#2C2C2C] bg-[#FAF8F5] ring-1 ring-[#2C2C2C]' : 'border-[#D8CFC4] hover:border-[#2C2C2C]'
+                          metodoPago === 'transferencia' ? 'border-[#8C7F78] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
                         }`}
                       >
-                        <p className="text-xs font-semibold text-[#1A1A1A]">Transferencia</p>
-                        <p className="text-[11px] text-[#3D3734] mt-0.5">Te pasamos el alias al confirmar</p>
+                        <p className="text-xs font-medium text-[#3A3532]">Transferencia</p>
+                        <p className="text-[11px] text-[#6E655F]">Te pasamos el alias al confirmar</p>
                       </button>
 
                       <button
                         onClick={() => setMetodoPago('efectivo')}
                         className={`p-3 rounded-xl border text-left transition ${
-                          metodoPago === 'efectivo' ? 'border-[#2C2C2C] bg-[#FAF8F5] ring-1 ring-[#2C2C2C]' : 'border-[#D8CFC4] hover:border-[#2C2C2C]'
+                          metodoPago === 'efectivo' ? 'border-[#8C7F78] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
                         }`}
                       >
-                        <p className="text-xs font-semibold text-[#1A1A1A]">Efectivo</p>
-                        <p className="text-[11px] text-[#3D3734] mt-0.5">Para retiros o entregas coordinadas</p>
+                        <p className="text-xs font-medium text-[#3A3532]">Efectivo</p>
+                        <p className="text-[11px] text-[#6E655F]">Para retiros o entregas coordinadas</p>
                       </button>
                     </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-[#E5DDD3] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C534E] font-medium">3. DATOS DE CONTACTO</p>
+                    <input
+                      type="text"
+                      placeholder="Tu nombre y apellido *"
+                      value={nombreCliente}
+                      onChange={(e) => setNombreCliente(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs text-[#3A3532] placeholder-[#7A716B] border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#8C7F78]"
+                    />
                   </div>
 
                 </>
               )}
             </div>
-
-                       {carrito.length > 0 && (
-              <div className="p-5 bg-white border-t border-[#D8CFC4] space-y-3">
-                <div className="space-y-1.5 text-xs font-medium text-[#1A1A1A]">
+            {carrito.length > 0 && (
+              <div className="p-5 bg-white border-t border-[#EDE6DD] space-y-3">
+                <div className="space-y-1 text-xs text-[#5C534E]">
                   <div className="flex justify-between">
                     <span>Subtotal productos</span>
                     <span>{formatearPrecio(subtotal)}</span>
@@ -577,23 +575,23 @@ export default function App() {
                     <span>{metodoEntrega === 'coordinar' ? 'A coordinar' : costoEnvio === 0 ? 'Gratis' : formatearPrecio(costoEnvio)}</span>
                   </div>
                 </div>
-                <div className="flex justify-between items-center pt-2 border-t border-[#E5DDD3]">
-                  <span className="text-xs font-bold tracking-[0.15em] uppercase text-[#1A1A1A]">TOTAL ESTIMADO</span>
-                  <span className="font-serif text-2xl font-bold text-[#1A1A1A]">{formatearPrecio(totalFinal)}</span>
+                <div className="flex justify-between items-center pt-1.5 border-t border-[#F0EAE2]">
+                  <span className="text-xs tracking-[0.15em] uppercase text-[#5C534E] font-medium">TOTAL ESTIMADO</span>
+                  <span className="font-serif text-2xl font-semibold text-[#3A3532]">{formatearPrecio(totalFinal)}</span>
                 </div>
-                <div className="bg-[#F4EFEA] p-2.5 rounded-lg flex items-start gap-2 text-xs text-[#1A1A1A]">
-                  <Check className="w-4 h-4 text-[#1A1A1A] shrink-0 mt-0.5" />
+                <div className="bg-[#F4EFEA] p-2.5 rounded-lg flex items-start gap-2 text-[11px] text-[#4A433E]">
+                  <Check className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
                   <span>Tu pedido quedará pendiente de confirmación. Te escribimos por WhatsApp para confirmar stock y coordinar el pago.</span>
                 </div>
-                {errorForm && <p className="text-xs text-red-600 font-semibold">{errorForm}</p>}
+                {errorForm && <p className="text-xs text-red-600 font-medium">{errorForm}</p>}
                 <button
                   onClick={enviarPedidoWhatsApp}
-                  className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition"
+                  className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm flex items-center justify-center gap-2 transition"
                 >
                   <MessageCircle className="w-4 h-4" />
                   ENVIAR PEDIDO POR WHATSAPP
                 </button>
-                <p className="text-[11px] font-medium text-center text-[#3D3734]">Primero confirmamos disponibilidad, después podés transferir.</p>
+                <p className="text-[11px] text-center text-[#6E655F]">Primero confirmamos disponibilidad, después podés transferir.</p>
               </div>
             )}
 
