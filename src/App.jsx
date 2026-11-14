@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
   ShoppingBag, Eye, Smile, Sparkles, Brush, Heart, X,
-  Plus, Minus, Trash2, MessageCircle,
-  ChevronDown, ChevronLeft, ChevronRight, Menu
+  Plus, Minus, Trash2, Check, MessageCircle, MapPin,
+  Truck, ChevronDown, ChevronLeft, ChevronRight, Menu
 } from 'lucide-react';
 import { PRODUCTOS_INICIALES } from './productos.js';
 
@@ -26,6 +26,7 @@ export default function App() {
   const [metodoPago, setMetodoPago] = useState('transferencia');
   const [nombreCliente, setNombreCliente] = useState('');
   const [direccionCliente, setDireccionCliente] = useState('');
+  const [errorForm, setErrorForm] = useState('');
 
   const [productoModal, setProductoModal] = useState(null);
   const [opcionElegida, setOpcionElegida] = useState('');
@@ -37,7 +38,7 @@ export default function App() {
     setCantidadModal(1);
     setFotoActivaIdx(0);
     const opcionesDisponibles = producto.opciones || producto.tonos || producto.colores || [];
-setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
+    setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles[0] : '');
   };
 
   const cerrarDetalleProducto = () => {
@@ -49,24 +50,24 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
     ? (productoModal.imagenes && productoModal.imagenes.length > 0 ? productoModal.imagenes : [productoModal.imagen])
     : [];
 
-    const opcionesModal = productoModal
+  const opcionesModal = productoModal
     ? (productoModal.opciones || productoModal.tonos || productoModal.colores || [])
     : [];
 
-    const productosFiltrados = categoriaActiva === 'TODAS'
+  const productosFiltrados = categoriaActiva === 'TODAS'
     ? PRODUCTOS_INICIALES
-    : PRODUCTOS_INICIALES.filter((p) => 
-        Array.isArray(p.categoria) 
-          ? p.categoria.includes(categoriaActiva) 
+    : PRODUCTOS_INICIALES.filter((p) =>
+        Array.isArray(p.categoria)
+          ? p.categoria.includes(categoriaActiva)
           : p.categoria === categoriaActiva
       );
-
 
   const seleccionarCategoria = (id) => {
     setCategoriaActiva(id);
     setDesplegableCatMovil(false);
     setMenuMovilAbierto(false);
   };
+
   const agregarAlCarrito = (producto, cantidad = 1, tono = '') => {
     const claveUnica = tono ? `${producto.id}-${tono}` : `${producto.id}`;
     setCarrito((prev) => {
@@ -103,25 +104,37 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
       maximumFractionDigits: 0,
     }).format(valor);
 
-const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=Hola%20Lumina!%20Quiero%20mas%20informacion`;
+  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
 
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) return;
-    let texto = `Hola Lumina! Quiero hacer el siguiente pedido:\n\n`;
-    carrito.forEach((item) => {
-      const detalleTono = item.opcionElegida ? ` (Tono/Opción: ${item.opcionElegida})` : '';
-      texto += `• ${item.cantidad}x ${item.nombre}${detalleTono} - ${formatearPrecio(item.precio * item.cantidad)}\n`;
-    });
-    texto += `\nSubtotal: ${formatearPrecio(subtotal)}`;
-    texto += `\nEntrega: ${metodoEntrega === 'envio' ? `Envío a domicilio (${formatearPrecio(costoEnvio)})` : 'Retiro a coordinar (Gratis)'}`;
-    texto += `\nTotal: ${formatearPrecio(totalFinal)}`;
-    texto += `\nPago: ${metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo'}`;
-    if (nombreCliente) texto += `\nNombre: ${nombreCliente}`;
-    if (metodoEntrega === 'envio' && direccionCliente) texto += `\nDirección: ${direccionCliente}`;
 
-window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, '_blank');
+    if (!nombreCliente.trim()) {
+      setErrorForm('Por favor, ingresá tu nombre y apellido.');
+      return;
+    }
+    if (metodoEntrega === 'envio' && !direccionCliente.trim()) {
+      setErrorForm('Por favor, ingresá tu dirección y barrio para el envío.');
+      return;
+    }
+    setErrorForm('');
+
+    const lineasProductos = carrito
+      .map((item) => {
+        const detalleTono = item.opcionElegida ? ` (Tono/Opción: ${item.opcionElegida})` : '';
+        return `• ${item.cantidad}x ${item.nombre}${detalleTono} (${formatearPrecio(item.precio * item.cantidad)})`;
+      })
+      .join('\n');
+
+    let textoEntrega = 'Entrega a coordinar por WhatsApp';
+    if (metodoEntrega === 'envio') textoEntrega = `Envío a domicilio ($4.000)\nDirección: ${direccionCliente}`;
+    if (metodoEntrega === 'retiro') textoEntrega = 'Retiro por domicilio (Gratis · Felix de Zuñiga 4637)';
+
+    const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
+    const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
+
+    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
-
   return (
     <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
       <div className="bg-[#EFE8E0] text-[#5C534E] text-[11px] tracking-[0.2em] uppercase py-2 overflow-hidden border-b border-[#E5DDD3]">
@@ -137,9 +150,9 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           <button onClick={() => setMenuMovilAbierto(!menuMovilAbierto)} className="sm:hidden p-2 text-[#2C2C2C]">
             {menuMovilAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-<a href="#" onClick={() => seleccionarCategoria('TODAS')} className="font-serif text-2xl sm:text-3xl tracking-[0.22em] text-[#2C2C2C]">
-  LUMINA
-</a>
+          <a href="#" onClick={() => seleccionarCategoria('TODAS')} className="font-serif text-2xl sm:text-3xl tracking-[0.22em] text-[#2C2C2C]">
+            LUMINA
+          </a>
 
           <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.18em] text-[#6E655F]">
             <a href="#categorias" className="hover:text-[#2C2C2C] transition">CATEGORÍAS</a>
@@ -169,8 +182,10 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           </div>
         )}
       </header>
+
       <section className="px-4 sm:px-6 pt-6 pb-8">
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#F9ECE4] via-[#F5EFEA] to-[#EFE8F3] border border-[#EDE4DC] py-14 sm:py-24 px-6 text-center">
+          <p className="text-[11px] tracking-[0.28em] uppercase text-[#8C7F78] mb-3">COLECCIÓN ESENCIAL</p>
           <h1 className="font-serif text-4xl sm:text-6xl font-normal text-[#2C2C2C] mb-4">Tus esenciales</h1>
           <p className="font-serif italic text-lg sm:text-xl text-[#6E655F] max-w-md mx-auto mb-8">
             Productos de belleza y cuidado para todos los días.
@@ -232,8 +247,12 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           })}
         </div>
       </section>
-
       <section id="coleccion" className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 flex-1">
+        <div className="text-center mb-8">
+          <p className="text-[10px] tracking-[0.25em] uppercase text-[#8C7F78] mb-2">{categoriaActiva === 'TODAS' ? 'TODOS LOS PRODUCTOS' : categoriaActiva}</p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-[#2C2C2C]">Nuestra colección</h2>
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {productosFiltrados.map((producto) => {
             const tieneTonos = (producto.opciones || producto.tonos || producto.colores || []).length > 0;
@@ -260,7 +279,9 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
 
                 <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
                   <div onClick={() => abrirDetalleProducto(producto)} className="cursor-pointer">
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#8C7F78] mb-1">{producto.categoria}</p>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#8C7F78] mb-1">
+                      {Array.isArray(producto.categoria) ? producto.categoria.join(' · ') : producto.categoria}
+                    </p>
                     <h3 className="font-serif text-base sm:text-lg text-[#2C2C2C] leading-snug mb-1">{producto.nombre}</h3>
                     <p className="font-medium text-sm sm:text-base text-[#2C2C2C] mb-3">{formatearPrecio(producto.precio)}</p>
                   </div>
@@ -277,6 +298,7 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           })}
         </div>
       </section>
+
       {productoModal && (
         <div
           onClick={cerrarDetalleProducto}
@@ -321,7 +343,9 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
 
             <div className="p-5 sm:p-7 space-y-4">
               <div>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78]">{productoModal.categoria}</span>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-[#8C7F78]">
+                  {Array.isArray(productoModal.categoria) ? productoModal.categoria.join(' · ') : productoModal.categoria}
+                </span>
                 <h2 className="font-serif text-2xl sm:text-3xl text-[#2C2C2C] mt-0.5">{productoModal.nombre}</h2>
                 <p className="text-xl font-semibold text-[#2C2C2C] mt-1">{formatearPrecio(productoModal.precio)}</p>
               </div>
@@ -388,109 +412,168 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
       )}
       {carritoAbierto && (
         <div onClick={() => setCarritoAbierto(false)} className="fixed inset-0 z-50 bg-black/50 flex justify-end">
-          <div onClick={(e) => e.stopPropagation()} className="bg-[#FDF2F4] w-full max-w-md h-full flex flex-col shadow-2xl">
-            <div className="p-5 border-b border-[#EDE6DD] flex items-center justify-between">
-              <h3 className="font-serif text-xl">Tu carrito ({totalProductos})</h3>
-              <button onClick={() => setCarritoAbierto(false)} className="p-2">
+          <div onClick={(e) => e.stopPropagation()} className="bg-[#FAF8F5] w-full max-w-md h-full flex flex-col shadow-2xl">
+            <div className="p-5 bg-white border-b border-[#EDE6DD] flex items-center justify-between">
+              <div>
+                <h3 className="font-serif text-2xl text-[#2C2C2C]">Tu pedido</h3>
+                <p className="text-[11px] text-[#8C7F78]">{totalProductos} {totalProductos === 1 ? 'producto' : 'productos'}</p>
+              </div>
+              <button onClick={() => setCarritoAbierto(false)} className="p-2 text-[#6E655F] hover:text-[#2C2C2C]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
               {carrito.length === 0 ? (
-                <p className="text-center text-sm text-[#8C7F78] py-10">Tu carrito está vacío.</p>
+                <div className="text-center py-16 space-y-3">
+                  <ShoppingBag className="w-10 h-10 text-[#C8A29E] mx-auto stroke-[1.2]" />
+                  <p className="font-serif text-xl text-[#2C2C2C]">Tu carrito está vacío</p>
+                  <p className="text-xs text-[#8C7F78]">Explorá la colección y agregá tus productos favoritos.</p>
+                </div>
               ) : (
                 <>
-                  {carrito.map((item) => (
-                    <div key={item.claveUnica} className="flex gap-3 bg-white p-3 rounded-2xl border border-[#EDE6DD]">
-                      <img src={item.imagen} alt={item.nombre} className="w-16 h-16 rounded-xl object-cover" />
-                      <div className="flex-1">
-                        <h4 className="text-sm font-medium">{item.nombre}</h4>
-                        {item.opcionElegida && (
-                          <p className="text-xs text-[#8C7F78]">Tono: {item.opcionElegida}</p>
-                        )}
-                        <p className="text-sm font-semibold mt-1">{formatearPrecio(item.precio * item.cantidad)}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => cambiarCantidad(item.claveUnica, -1)} className="p-1 border rounded">
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="text-xs">{item.cantidad}</span>
-                          <button onClick={() => cambiarCantidad(item.claveUnica, 1)} className="p-1 border rounded">
-                            <Plus className="w-3 h-3" />
-                          </button>
-                          <button onClick={() => quitarProducto(item.claveUnica)} className="ml-auto text-red-400 p-1">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                  <div className="space-y-3">
+                    {carrito.map((item) => (
+                      <div key={item.claveUnica} className="flex gap-3 bg-white p-3.5 rounded-xl border border-[#EDE6DD]">
+                        <img src={item.imagen} alt={item.nombre} className="w-16 h-16 rounded-lg object-cover bg-[#F4EFEA] shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <h4 className="font-serif text-base text-[#2C2C2C] truncate">{item.nombre}</h4>
+                            <button onClick={() => quitarProducto(item.claveUnica)} className="text-[10px] uppercase text-[#9A8F88] hover:text-red-500 flex items-center gap-0.5 shrink-0">
+                              <Trash2 className="w-3 h-3" /> QUITAR
+                            </button>
+                          </div>
+                          {item.opcionElegida && (
+                            <p className="text-[11px] text-[#8C7F78] font-medium">Tono: {item.opcionElegida}</p>
+                          )}
+                          <p className="text-xs text-[#7A716B] mb-2">{formatearPrecio(item.precio)} c/u</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center border border-[#E5DDD3] rounded-lg">
+                              <button onClick={() => cambiarCantidad(item.claveUnica, -1)} className="p-1.5"><Minus className="w-3 h-3" /></button>
+                              <span className="px-2.5 text-xs font-medium">{item.cantidad}</span>
+                              <button onClick={() => cambiarCantidad(item.claveUnica, 1)} className="p-1.5"><Plus className="w-3 h-3" /></button>
+                            </div>
+                            <span className="text-sm font-medium">{formatearPrecio(item.precio * item.cantidad)}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
 
-                  <div className="bg-white p-4 rounded-2xl border border-[#EDE6DD] space-y-3 text-xs">
-                    <p className="uppercase tracking-wider text-[#8C7F78] font-medium">Entrega</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setMetodoEntrega('envio')}
-                        className={`p-2.5 rounded-xl border ${metodoEntrega === 'envio' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
-                      >
-                        Envío ($4.000)
-                      </button>
-                      <button
-                        onClick={() => setMetodoEntrega('retiro')}
-                        className={`p-2.5 rounded-xl border ${metodoEntrega === 'retiro' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
-                      >
-                        Retiro (Gratis)
-                      </button>
-                    </div>
-                    <p className="uppercase tracking-wider text-[#8C7F78] font-medium pt-1">Pago</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setMetodoPago('transferencia')}
-                        className={`p-2.5 rounded-xl border ${metodoPago === 'transferencia' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
-                      >
-                        Transferencia
-                      </button>
-                      <button
-                        onClick={() => setMetodoPago('efectivo')}
-                        className={`p-2.5 rounded-xl border ${metodoPago === 'efectivo' ? 'bg-[#2C2C2C] text-white' : 'bg-[#FDF2F4]'}`}
-                      >
-                        Efectivo
-                      </button>
-                    </div>
+                  <div className="bg-white p-4 rounded-xl border border-[#EDE6DD] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium">1. DATOS DE CONTACTO</p>
                     <input
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder="Tu nombre y apellido *"
                       value={nombreCliente}
                       onChange={(e) => setNombreCliente(e.target.value)}
-                      className="w-full p-2.5 border border-[#E5DDD3] rounded-xl"
+                      className="w-full px-3.5 py-2.5 text-xs border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#2C2C2C]"
                     />
+                  </div>
+                  <div className="bg-white p-4 rounded-xl border border-[#EDE6DD] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium">2. MÉTODO DE ENTREGA</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      <button
+                        onClick={() => setMetodoEntrega('envio')}
+                        className={`p-3 rounded-xl border text-left transition flex items-start gap-2.5 ${
+                          metodoEntrega === 'envio' ? 'border-[#2C2C2C] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
+                        }`}
+                      >
+                        <Truck className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs font-medium text-[#2C2C2C]">Envío a domicilio</span>
+                            <span className="text-xs font-semibold text-[#2C2C2C]">$4.000</span>
+                          </div>
+                          <p className="text-[10px] text-[#7A716B]">Entrega en Córdoba Capital</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => setMetodoEntrega('retiro')}
+                        className={`p-3 rounded-xl border text-left transition flex items-start gap-2.5 ${
+                          metodoEntrega === 'retiro' ? 'border-[#2C2C2C] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs font-medium text-[#2C2C2C]">Retiro por domicilio</span>
+                            <span className="text-xs font-semibold text-[#25D366]">Gratis</span>
+                          </div>
+                          <p className="text-[10px] text-[#7A716B]">Felix de Zuñiga 4637 (a coordinar)</p>
+                        </div>
+                      </button>
+                    </div>
+
                     {metodoEntrega === 'envio' && (
                       <input
                         type="text"
-                        placeholder="Dirección de envío"
+                        placeholder="Tu dirección y barrio para el envío *"
                         value={direccionCliente}
                         onChange={(e) => setDireccionCliente(e.target.value)}
-                        className="w-full p-2.5 border border-[#E5DDD3] rounded-xl"
+                        className="w-full px-3.5 py-2.5 text-xs border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#2C2C2C]"
                       />
                     )}
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-[#EDE6DD] space-y-3">
+                    <p className="text-[11px] tracking-[0.18em] uppercase text-[#6E655F] font-medium">3. FORMA DE PAGO</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setMetodoPago('transferencia')}
+                        className={`p-3 rounded-xl border text-left transition ${
+                          metodoPago === 'transferencia' ? 'border-[#2C2C2C] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
+                        }`}
+                      >
+                        <p className="text-xs font-medium text-[#2C2C2C]">Transferencia</p>
+                        <p className="text-[10px] text-[#7A716B]">Te pasamos el alias al confirmar</p>
+                      </button>
+
+                      <button
+                        onClick={() => setMetodoPago('efectivo')}
+                        className={`p-3 rounded-xl border text-left transition ${
+                          metodoPago === 'efectivo' ? 'border-[#2C2C2C] bg-[#FAF8F5]' : 'border-[#EDE6DD] hover:border-[#C8A29E]'
+                        }`}
+                      >
+                        <p className="text-xs font-medium text-[#2C2C2C]">Efectivo</p>
+                        <p className="text-[10px] text-[#7A716B]">Para retiros o entregas coordinadas</p>
+                      </button>
+                    </div>
                   </div>
                 </>
               )}
             </div>
 
             {carrito.length > 0 && (
-              <div className="p-5 border-t border-[#EDE6DD] bg-white space-y-3">
-                <div className="flex justify-between text-base font-semibold">
-                  <span>Total</span>
-                  <span>{formatearPrecio(totalFinal)}</span>
+              <div className="p-5 bg-white border-t border-[#EDE6DD] space-y-3">
+                <div className="space-y-1 text-xs text-[#6E655F]">
+                  <div className="flex justify-between">
+                    <span>Subtotal productos</span>
+                    <span>{formatearPrecio(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Costo de envío</span>
+                    <span>{costoEnvio === 0 ? 'Gratis' : formatearPrecio(costoEnvio)}</span>
+                  </div>
                 </div>
+                <div className="flex justify-between items-center pt-1 border-t border-[#F0EAE2]">
+                  <span className="text-xs tracking-[0.15em] uppercase text-[#6E655F]">TOTAL ESTIMADO</span>
+                  <span className="font-serif text-2xl font-semibold">{formatearPrecio(totalFinal)}</span>
+                </div>
+                <div className="bg-[#F4EFEA] p-2.5 rounded-lg flex items-start gap-2 text-[11px] text-[#5C534E]">
+                  <Check className="w-4 h-4 text-[#C8A29E] shrink-0 mt-0.5" />
+                  <span>Tu pedido quedará pendiente de confirmación. Te escribimos por WhatsApp para confirmar stock y coordinar el pago.</span>
+                </div>
+                {errorForm && <p className="text-xs text-red-600 font-medium">{errorForm}</p>}
                 <button
                   onClick={enviarPedidoWhatsApp}
-                  className="w-full bg-[#25D366] text-white py-3.5 rounded-xl text-xs tracking-[0.15em] uppercase font-semibold flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs tracking-[0.18em] uppercase font-semibold rounded-xl shadow-sm flex items-center justify-center gap-2 transition"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Enviar pedido por WhatsApp
+                  ENVIAR PEDIDO POR WHATSAPP
                 </button>
+                <p className="text-[10px] text-center text-[#8C7F78]">Primero confirmamos disponibilidad, después podés transferir.</p>
               </div>
             )}
           </div>
@@ -501,6 +584,7 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
         href={linkWhatsAppConsulta}
         target="_blank"
         rel="noreferrer"
+        aria-label="Consultar por WhatsApp"
         className="fixed bottom-5 right-5 z-30 bg-[#25D366] text-white p-3.5 rounded-full shadow-lg hover:scale-105 transition"
       >
         <MessageCircle className="w-6 h-6" />
