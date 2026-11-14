@@ -49,10 +49,8 @@ setOpcionElegida(opcionesDisponibles.length > 0 ? opcionesDisponibles : '');
     ? (productoModal.imagenes && productoModal.imagenes.length > 0 ? productoModal.imagenes : [productoModal.imagen])
     : [];
 
-  const opcionesModal = productoModal
-    ? (productoModa
-       
-       l.opciones || productoModal.tonos || productoModal.colores || [])
+    const opcionesModal = productoModal
+    ? (productoModal.opciones || productoModal.tonos || productoModal.colores || [])
     : [];
 
     const productosFiltrados = categoriaActiva === 'TODAS'
