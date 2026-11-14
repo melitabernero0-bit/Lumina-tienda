@@ -135,11 +135,12 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
          <a
   href="#"
   onClick={() => seleccionarCategoria('TODAS')}
-  style={{ fontFamily: "'Cormorant Garamond', serif" }}
-  className="text-3xl sm:text-4xl font-light tracking-[0.25em] text-[#2C2C2C]"
+  aria-label="Lumina, volver al inicio"
+  className="transition-opacity hover:opacity-75"
 >
-  LUMINA
+  <img src="/lumina-wordmark.png" alt="LUMINA" className="h-8 w-auto sm:h-9" />
 </a>
+
 
           <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.18em] text-[#6E655F]">
             <a href="#categorias" className="hover:text-[#2C2C2C] transition">CATEGORÍAS</a>
