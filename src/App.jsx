@@ -132,16 +132,9 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           <button onClick={() => setMenuMovilAbierto(!menuMovilAbierto)} className="sm:hidden p-2 text-[#2C2C2C]">
             {menuMovilAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-        <a
-  href="#"
-  onClick={() => seleccionarCategoria('TODAS')}
-  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-  className="text-3xl sm:text-4xl font-normal tracking-[0.28em] text-[#2C2C2C] uppercase"
->
+<a href="#" onClick={() => seleccionarCategoria('TODAS')} className="font-serif text-2xl sm:text-3xl tracking-[0.22em] text-[#2C2C2C]">
   LUMINA
 </a>
-
-
 
           <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.18em] text-[#6E655F]">
             <a href="#categorias" className="hover:text-[#2C2C2C] transition">CATEGORÍAS</a>
