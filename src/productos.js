@@ -18,10 +18,10 @@ export const PRODUCTOS_INICIALES = [
   },
   {
     id: 3,
-    nombre: "Set Brochas Soft",
-    precio: 14500,
+    nombre: "Guante exfoliante",
+    precio: 1500,
     categoria: "ACCESORIOS",
-    descripcion: "Set de brochas ultra suaves para rostro y ojos.",
-    imagen: "https://unsplash.com"
+    descripcion: "Remové células muertas e impurezas, piel mas luminosa y suave.",
+    imagen: "guanteexfoliante.jpeg"
   }
 ];
