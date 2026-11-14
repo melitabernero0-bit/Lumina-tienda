@@ -22,6 +22,6 @@ export const PRODUCTOS_INICIALES = [
     precio: 1500,
     categoria: "ACCESORIOS",
     descripcion: "Remové células muertas e impurezas, piel mas luminosa y suave.",
-    imagen: "guanteexfoliante.jpeg"
+    imagen: "/guanteexfoliante.jpeg"
   }
 ];
