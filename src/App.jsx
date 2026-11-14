@@ -132,14 +132,15 @@ window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(texto)}`, 
           <button onClick={() => setMenuMovilAbierto(!menuMovilAbierto)} className="sm:hidden p-2 text-[#2C2C2C]">
             {menuMovilAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-         <a
+        <a
   href="#"
   onClick={() => seleccionarCategoria('TODAS')}
-  aria-label="Lumina, volver al inicio"
-  className="transition-opacity hover:opacity-75"
+  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+  className="text-3xl sm:text-4xl font-normal tracking-[0.28em] text-[#2C2C2C] uppercase"
 >
-  <img src="/lumina-wordmark.png" alt="LUMINA" className="h-8 w-auto sm:h-9" />
+  LUMINA
 </a>
+
 
 
           <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.18em] text-[#6E655F]">
