@@ -104,7 +104,7 @@ export default function App() {
       maximumFractionDigits: 0,
     }).format(valor);
 
-  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+  const linkWhatsAppConsulta = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
 
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) return;
@@ -134,7 +134,7 @@ export default function App() {
     const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
     const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
 
-    window.open(`https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
   };
 
 
