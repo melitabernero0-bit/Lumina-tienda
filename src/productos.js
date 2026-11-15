@@ -181,7 +181,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
 • Acabado: Soft matte de larga duración.
 • Contenido: 29 ml.`,
     imagen: "/basesoftrubyrose.png",
-    imagenes: ["/basesoftrubyrose.png", "/tonosbaserubyrose.png"],
+    imagenes: ["/baserubyrose.jpeg", "/tonosbaserubyrose.png"],
     opciones: ["Beige 2", "Beige 3", "Beige 4", "Beige 5", "Beige 6", "Beige 7"],
     opcionesSinStock: ["Beige 7"]
   }
