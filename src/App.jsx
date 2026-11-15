@@ -141,7 +141,8 @@ export default function App() {
     const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
     const mensaje = `Hola LUMINA! Soy *${nombreCliente}*. Quiero hacer el siguiente pedido:\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
 
-    window.open(`https://wa.me{encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
+        window.open('https://wa.me' + WHATSAPP_NUMERO + '?text=' + encodeURIComponent(mensaje), '_blank', 'noopener,noreferrer');
+
   };
   return (
     <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
