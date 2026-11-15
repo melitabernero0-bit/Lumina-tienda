@@ -279,11 +279,12 @@ export default function App() {
                     alt={producto.nombre}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
-                  {tieneTonos && (
-                    <span className="absolute bottom-2 left-2 bg-white/90 text-[#2C2C2C] text-[10px] tracking-wider uppercase px-2.5 py-1 rounded-full border border-[#E5DDD3]">
-                      Varios tonos
+                  {producto.esCombo && (
+                    <span className="absolute bottom-2 left-2 bg-[#2C2C2C] text-white text-[10px] font-medium tracking-wider uppercase px-2.5 py-1 rounded-full shadow-sm">
+                      Combo
                     </span>
                   )}
+
                 </div>
 
                 <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
