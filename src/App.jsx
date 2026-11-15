@@ -14,6 +14,7 @@ const CATEGORIAS = [
   { id: 'CUIDADO PERSONAL', nombre: 'CUIDADO PERSONAL', icono: Heart },
 ];
 
+
 const WHATSAPP_NUMERO = '5493515091049';
 
 export default function App() {
