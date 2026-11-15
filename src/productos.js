@@ -104,23 +104,51 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
   },
   {
     id: 13,
-    nombre: "Labial mate Ruby Rose",
+    nombre: "Labial Líquido Perfect Lips Ruby Rose (Mate)",
     precio: 4000,
     categoria: "LABIOS",
     descripcion: "",
-    imagen: "/labialrubyrose.jpeg",
-    opciones: [] // Completar tonos
+    imagen: "/perfectlipsrubyrose.jpeg",
+    imagenes: [
+      "/perfectlipsrubyrose.jpeg",
+      "/labialmaterrtono1.jpeg",
+      "/labialmaterrtono2.jpeg",
+      "/labialmaterrtono3.jpeg",
+      "/labialmaterrtono6.jpeg",
+      "/labialmaterrtono7.jpeg",
+      "/labialmaterrtono8.jpeg"
+    ],
+    opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6", "Tono 7", "Tono 8"],
+    opcionesSinStock: ["Tono 4", "Tono 5"],
+    imagenesPorOpcion: {
+      "Tono 1": "/labialmaterrtono1.jpeg",
+      "Tono 2": "/labialmaterrtono2.jpeg",
+      "Tono 3": "/labialmaterrtono3.jpeg",
+      "Tono 6": "/labialmaterrtono6.jpeg",
+      "Tono 7": "/labialmaterrtono7.jpeg",
+      "Tono 8": "/labialmaterrtono8.jpeg"
+    }
   },
   {
     id: 14,
-    nombre: "Lipgloss con llavero",
+    nombre: "Lipgloss Pink 21 con llavero",
     precio: 4000,
     categoria: ["LABIOS"],
     descripcion: "",
-    imagen: "/lipglossllaveropink21.jpeg",
-    opciones: [] // Completar tonos
+    imagen: "/lipglossllavero.jpeg",
+    imagenes: [
+      "/lipglossllavero.jpeg",
+      "/lipglossllaverotono3.jpeg",
+      "/lipglossllaverotono6.jpeg"
+    ],
+    opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6"],
+    opcionesSinStock: ["Tono 1", "Tono 2", "Tono 4", "Tono 5"],
+    imagenesPorOpcion: {
+      "Tono 3": "/lipglossllaverotono3.jpeg",
+      "Tono 6": "/lipglossllaverotono6.jpeg"
+    }
   },
-    {
+{
     id: 15,
     nombre: "Mascara de pestañas 4D Pink 21",
     precio: 4500,
