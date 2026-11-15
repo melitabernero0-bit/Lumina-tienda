@@ -360,11 +360,23 @@ export default function App() {
                 <p className="text-xl font-semibold text-[#2C2C2C] mt-1">{formatearPrecio(productoModal.precio)}</p>
               </div>
 
-              {productoModal.descripcion && (
-                <p className="text-sm text-[#5C534E] leading-relaxed border-t border-[#E5DDD3] pt-3">
-                  {productoModal.descripcion}
-                </p>
+                            {productoModal.descripcion && (
+                <div className="text-sm text-[#5C534E] leading-relaxed border-t border-[#E5DDD3] pt-3 space-y-2 whitespace-pre-line">
+                  <p>{productoModal.descripcion}</p>
+                  {productoModal.textoAhorro && (
+                    <p className="pt-1 text-base text-[#2C2C2C]">
+                      <span className="font-serif italic text-lg">{productoModal.textoAhorro}</span>{' '}
+                      <strong className="font-semibold">({formatearPrecio(productoModal.precio)})</strong>
+                    </p>
+                  )}
+                  {productoModal.consultaTonos && (
+                    <p className="text-xs italic text-[#8C7F78]">
+                      * Consultá tonos disponibles por WhatsApp al confirmar tu pedido.
+                    </p>
+                  )}
+                </div>
               )}
+
 
               {opcionesModal.length > 0 && (
                 <div className="border-t border-[#E5DDD3] pt-4">
