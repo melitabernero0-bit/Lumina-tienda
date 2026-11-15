@@ -104,7 +104,7 @@ export default function App() {
       maximumFractionDigits: 0,
     }).format(valor);
 
-const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
+  const linkWhatsAppConsulta = `https://wa.me{WHATSAPP_NUMERO}?text=${encodeURIComponent('Hola Lumina! Quiero más información sobre sus productos.')}`;
 
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) return;
