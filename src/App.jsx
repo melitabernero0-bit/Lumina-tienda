@@ -128,16 +128,14 @@ export default function App() {
 
     let textoEntrega = 'Entrega a coordinar por WhatsApp';
     if (metodoEntrega === 'envio') textoEntrega = `Envío a domicilio ($4.000)\nDirección: ${direccionCliente}`;
-    if (metodoEntrega === 'retiro') textoEntrega = 'Retiro por domicilio (Gratis · Felix de Zuñiga 4637)';
+       if (metodoEntrega === 'retiro') textoEntrega = 'Retiro por domicilio (Gratis · Felix de Zuñiga 4637)';
     if (metodoEntrega === 'coordinar') textoEntrega = 'Entrega a coordinar';
 
     const textoPago = metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo';
-    const mensaje = `Hola LUMINA! Quiero hacer el siguiente pedido:\n\n*Cliente:* ${nombreCliente}\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
+    const mensaje = `Hola LUMINA! Soy *${nombreCliente}*. Quiero hacer el siguiente pedido:\n\n*Productos:*\n${lineasProductos}\n\n*Subtotal:* ${formatearPrecio(subtotal)}\n*Entrega:* ${textoEntrega}\n*Forma de pago:* ${textoPago}\n*Total estimado:* ${formatearPrecio(totalFinal)}\n\nQuedo a la espera de la confirmación de stock. ¡Gracias!`;
 
-    window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me{encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
   };
-
-
   return (
     <div className="min-h-screen flex flex-col bg-[#FDF2F4] text-[#2C2C2C] font-sans">
       <div className="bg-[#EFE8E0] text-[#5C534E] text-[11px] tracking-[0.2em] uppercase py-2 overflow-hidden border-b border-[#E5DDD3]">
