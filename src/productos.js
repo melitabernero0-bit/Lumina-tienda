@@ -189,9 +189,17 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     categoria: "ROSTRO",
     descripcion: "Prebase de maquillaje con una fórmula ligera que alisa la piel, unifica su textura y difumina los poros. Su acabado sedoso y traslúcido actúa como un velo transparente perfeccionador, que ayuda a lograr una aplicación más uniforme de la base de maquillaje y prolongar su duración.",
     imagen: "/primer.jpeg"
-  },
+     },
   {
     id: 20,
+    nombre: "Iluminador Pink 21",
+    precio: 4000,
+    categoria: "ROSTRO",
+    descripcion: "",
+    imagen: "/iluminador.jpeg"
+  },
+  {
+    id: 21,
     nombre: "Primer Grip",
     precio: 6700,
     categoria: "ROSTRO",
@@ -199,7 +207,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/primergrip.jpeg"
   },
   {
-    id: 21,
+    id: 22,
     nombre: "Base Ruby Rose Soft Matte",
     precio: 5200,
     categoria: "ROSTRO",
@@ -214,7 +222,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     opcionesSinStock: ["Beige 7"]
   },
     {
-    id: 22,
+    id: 23,
     nombre: "Cejas y pestañas",
     precio: 8600,
     categoria: "OJOS",
@@ -224,7 +232,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo1.jpeg"
   },
   {
-    id: 23,
+    id: 24,
     nombre: "Exfoliación total",
     precio: 9500,
     categoria: "CUIDADO PERSONAL",
@@ -234,7 +242,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo2.jpeg"
   },
   {
-    id: 24,
+    id: 25,
     nombre: "Lip combo",
     precio: 8500,
     categoria: "LABIOS",
@@ -245,7 +253,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo3.jpeg"
   },
   {
-    id: 25,
+    id: 26,
     nombre: "Fresh face",
     precio: 10800,
     categoria: "ROSTRO",
@@ -256,7 +264,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo4.jpeg"
   },
   {
-    id: 26,
+    id: 27,
     nombre: "Duo de esponjas + Mini brochas",
     precio: 4200,
     categoria: "ACCESORIOS",
@@ -266,7 +274,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo5.jpeg"
   },
   {
-    id: 27,
+    id: 28,
     nombre: "Long Lasting",
     precio: 16900,
     categoria: "ROSTRO",
