@@ -41,7 +41,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     nombre: "Espejo de cartera con cepillo",
     precio: 3500,
     categoria: "ACCESORIOS",
-    descripcion: "Tamaño ideal para cartera, espejo y cepillo (2 en 1). Incluye pinzita de depilar Eloise.",
+    descripcion: "Tamaño ideal para cartera, espejo y cepillo (2 en 1). Incluye pincita de depilar Eloise.",
     imagen: "/cepilloypinza.jpeg"
   },
   {
@@ -212,6 +212,68 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagenes: ["/baserubyrose.jpeg", "/tonosbaserubyrose.png"],
     opciones: ["Beige 2", "Beige 3", "Beige 4", "Beige 5", "Beige 6", "Beige 7"],
     opcionesSinStock: ["Beige 7"]
+  },
+    {
+    id: 22,
+    nombre: "NOMBRE_COMBO_1",
+    precio: 8600,
+    categoria: "OJOS",
+    esCombo: true,
+    descripcion: "Incluye: Gel para cejas ULTRA FIX + Máscara de pestañas 4D Pink 21 + Pincita de depilar.",
+    textoAhorro: "¡Ahorrás $1.000!",
+    imagen: "/combo1.jpeg"
+  },
+  {
+    id: 23,
+    nombre: "NOMBRE_COMBO_2",
+    precio: 9500,
+    categoria: "CUIDADO PERSONAL",
+    esCombo: true,
+    descripcion: "Incluye: Exfoliante corporal TEI + Guante exfoliante.",
+    textoAhorro: "¡Ahorrás $1.100!",
+    imagen: "/combo2.jpeg"
+  },
+  {
+    id: 24,
+    nombre: "NOMBRE_COMBO_3",
+    precio: 8500,
+    categoria: "LABIOS",
+    esCombo: true,
+    consultaTonos: true,
+    descripcion: "Incluye: Delineador labial Pink 21 + Labial líquido Perfect Lips Ruby Rose + Lipgloss Pink 21 con llavero.",
+    textoAhorro: "¡Ahorrás $1.000!",
+    imagen: "/combo3.jpeg"
+  },
+  {
+    id: 25,
+    nombre: "NOMBRE_COMBO_4",
+    precio: 10800,
+    categoria: "ROSTRO",
+    esCombo: true,
+    consultaTonos: true,
+    descripcion: "Incluye: Base Ruby Rose Soft Matte + Corrector TEI + Rubor en barra Pink 21.",
+    textoAhorro: "¡Ahorrás $1.100!",
+    imagen: "/combo4.jpeg"
+  },
+  {
+    id: 26,
+    nombre: "NOMBRE_COMBO_5",
+    precio: 4200,
+    categoria: "ACCESORIOS",
+    esCombo: true,
+    descripcion: "Incluye: Beauty Blender + Mini esponjas para corrector.",
+    textoAhorro: "¡Set de mini brochas DE REGALO!",
+    imagen: "/combo5.jpeg"
+  },
+  {
+    id: 27,
+    nombre: "NOMBRE_COMBO_6",
+    precio: 16900,
+    categoria: "ROSTRO",
+    esCombo: true,
+    descripcion: "Incluye: Primer mate DAPOP + Primer Grip DAPOP + Fijador de maquillaje TEI.",
+    textoAhorro: "¡Ahorrás $1.900!",
+    imagen: "/combo6.jpeg"
   }
 ];
 
