@@ -120,7 +120,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/lipglossllaveropink21.jpeg",
     opciones: [] // Completar tonos
   },
-  {
+    {
     id: 15,
     nombre: "Mascara de pestañas 4D Pink 21",
     precio: 4500,
@@ -145,7 +145,6 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/neceserhandsome.jpeg"
   },
   {
-      {
     id: 18,
     nombre: "Rubor en barra Pink 21",
     precio: 3500,
