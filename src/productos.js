@@ -75,7 +75,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     nombre: "Mini esponjas para corrector",
     precio: 2600,
     categoria: "ACCESORIOS",
-    descripcion: "X5",
+    descripcion: "5 mini esponjas para corrector en cajita.",
     imagen: "/esponjapcorrector.jpeg"
   },
   {
@@ -145,13 +145,15 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/neceserhandsome.jpeg"
   },
   {
+      {
     id: 18,
     nombre: "Rubor en barra Pink 21",
     precio: 3500,
     categoria: "ROSTRO",
     descripcion: "",
     imagen: "/ruborenbarra.jpeg",
-    opciones: ["Tono 2", "Tono 4", "Tono 5", "Tono 6"]
+    opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6"],
+    opcionesSinStock: ["Tono 1", "Tono 3"]
   },
   {
     id: 19,
@@ -168,5 +170,21 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     categoria: "ROSTRO",
     descripcion: 'Prebase hidratante. Textura en gel y efecto "pegajoso" (tipo imán o adhesivo) diseñada para sujetar la base y los productos de rostro, fijación duradera.',
     imagen: "/primergrip.jpeg"
+  },
+  {
+    id: 21,
+    nombre: "Base Ruby Rose Soft Matte",
+    precio: 5200,
+    categoria: "ROSTRO",
+    descripcion: `Piel uniforme, suave y libre de brillos durante todo el día. Su fórmula de cobertura media a alta disimula imperfecciones al instante, ofreciendo un acabado mate natural y aterciopelado sin sensación pesada.
+• Ideal para: Pieles mixtas a grasas (controla la oleosidad).
+• Cobertura: Media a alta (construible).
+• Acabado: Soft matte de larga duración.
+• Contenido: 29 ml.`,
+    imagen: "/basesoftrubyrose.png",
+    imagenes: ["/basesoftrubyrose.png", "/tonosbaserubyrose.png"],
+    opciones: ["Beige 2", "Beige 3", "Beige 4", "Beige 5", "Beige 6", "Beige 7"],
+    opcionesSinStock: ["Beige 7"]
   }
 ];
+
