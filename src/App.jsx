@@ -363,12 +363,12 @@ export default function App() {
                             {productoModal.descripcion && (
                 <div className="text-sm text-[#5C534E] leading-relaxed border-t border-[#E5DDD3] pt-3 space-y-2 whitespace-pre-line">
                   <p>{productoModal.descripcion}</p>
-                  {productoModal.textoAhorro && (
-                    <p className="pt-1 text-base text-[#2C2C2C]">
-                      <span className="font-serif italic text-lg">{productoModal.textoAhorro}</span>{' '}
-                      <strong className="font-semibold">({formatearPrecio(productoModal.precio)})</strong>
+                                    {productoModal.textoAhorro && (
+                    <p className="pt-1 font-serif italic text-lg text-[#2C2C2C]">
+                      {productoModal.textoAhorro}
                     </p>
                   )}
+
                   {productoModal.consultaTonos && (
                     <p className="text-xs italic text-[#8C7F78]">
                       * Consultá tonos disponibles por WhatsApp al confirmar tu pedido.
