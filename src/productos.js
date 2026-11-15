@@ -108,9 +108,9 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     precio: 4000,
     categoria: "LABIOS",
     descripcion: "",
-    imagen: "/perfectlipsrubyrose.jpeg",
+    imagen: "/perfectlipsrubyrose.png",
     imagenes: [
-      "/perfectlipsrubyrose.jpeg",
+      "/perfectlipsrubyrose.png",
       "/labialmaterrtono1.jpeg",
       "/labialmaterrtono2.jpeg",
       "/labialmaterrtono3.jpeg",
@@ -135,9 +135,9 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     precio: 4000,
     categoria: ["LABIOS"],
     descripcion: "",
-    imagen: "/lipglossllavero.jpeg",
+    imagen: "/lipglossllavero.png",
     imagenes: [
-      "/lipglossllavero.jpeg",
+      "/lipglossllavero.png",
       "/lipglossllaverotono3.jpeg",
       "/lipglossllaverotono6.jpeg"
     ],
@@ -208,7 +208,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
 • Cobertura: Media a alta (construible).
 • Acabado: Soft matte de larga duración.
 • Contenido: 29 ml.`,
-    imagen: "/baserubyrose.jpeg",
+        imagen: "/baserubyrose.jpeg",
     imagenes: ["/baserubyrose.jpeg", "/tonosbaserubyrose.png"],
     opciones: ["Beige 2", "Beige 3", "Beige 4", "Beige 5", "Beige 6", "Beige 7"],
     opcionesSinStock: ["Beige 7"]
