@@ -34,16 +34,19 @@ export default function App() {
   const [cantidadModal, setCantidadModal] = useState(1);
   const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
 
-  const abrirDetalleProducto = (producto) => {
+   const abrirDetalleProducto = (producto) => {
     setProductoModal(producto);
     setCantidadModal(1);
-    setFotoActivaIdx(0);
     const opcionesDisponibles = producto.opciones || producto.tonos || producto.colores || [];
     const sinStock = producto.opcionesSinStock || [];
     const primeraConStock = opcionesDisponibles.find((op) => !sinStock.includes(op)) || '';
     setOpcionElegida(primeraConStock);
-  };
 
+    const fotos = producto.imagenes && producto.imagenes.length > 0 ? producto.imagenes : [producto.imagen];
+    const fotoDelTono = producto.imagenesPorOpcion?.[primeraConStock];
+    const idxInicial = fotoDelTono ? fotos.indexOf(fotoDelTono) : 0;
+    setFotoActivaIdx(idxInicial >= 0 ? idxInicial : 0);
+  };
 
   const cerrarDetalleProducto = () => {
     setProductoModal(null);
@@ -366,14 +369,22 @@ export default function App() {
                   <p className="text-xs tracking-[0.15em] uppercase text-[#6E655F] mb-2.5">
                     Tono / Color: <strong className="text-[#2C2C2C]">{opcionElegida}</strong>
                   </p>
-                                    <div className="flex flex-wrap gap-2">
+                                                      <div className="flex flex-wrap gap-2">
                     {opcionesModal.map((opcion, idx) => {
                       const sinStock = (productoModal?.opcionesSinStock || []).includes(opcion);
                       return (
                         <button
                           key={idx}
                           disabled={sinStock}
-                          onClick={() => !sinStock && setOpcionElegida(opcion)}
+                          onClick={() => {
+                            if (sinStock) return;
+                            setOpcionElegida(opcion);
+                            const fotoDelTono = productoModal?.imagenesPorOpcion?.[opcion];
+                            if (fotoDelTono) {
+                              const idxFoto = fotosModal.indexOf(fotoDelTono);
+                              if (idxFoto >= 0) setFotoActivaIdx(idxFoto);
+                            }
+                          }}
                           className={`px-3.5 py-2 rounded-xl text-xs border transition ${
                             sinStock
                               ? 'bg-[#F4EFEA] text-[#9A8F88] border-[#E5DDD3] cursor-not-allowed line-through opacity-75'
