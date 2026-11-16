@@ -196,7 +196,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     precio: 4000,
     categoria: "ROSTRO",
     descripcion: "",
-    imagen: "/iluminador.PNG"
+    imagen: "/iluminador.jpeg"
   },
   {
     id: 21,
