@@ -180,7 +180,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     descripcion: "",
     imagen: "/ruborenbarra.jpeg",
     opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6"],
-    opcionesSinStock: ["Tono 1", "Tono 3"]
+    opcionesSinStock: ["Tono 1", "Tono 3", "Tono 6"],
   },
   {
     id: 19,
@@ -196,7 +196,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     precio: 4000,
     categoria: "ROSTRO",
     descripcion: "",
-    imagen: "/iluminador.jpeg"
+    imagen: "/iluminador.PNG"
   },
   {
     id: 21,
