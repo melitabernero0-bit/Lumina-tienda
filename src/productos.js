@@ -220,9 +220,79 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagenes: ["/baserubyrose.jpeg", "/tonosbaserubyrose.png"],
     opciones: ["Beige 2", "Beige 3", "Beige 4", "Beige 5", "Beige 6", "Beige 7"],
     opcionesSinStock: ["Beige 7"]
-  },
-    {
+    },
+  {
     id: 23,
+    nombre: "Labial Color Top",
+    precio: 2200,
+    categoria: "LABIOS",
+    consultaTonos: true,
+    descripcion: "Labial en barra de Pink 21.",
+    imagen: "/labialbarrapink21.jpeg"
+  },
+  {
+    id: 24,
+    nombre: "Rubor Love Crazy",
+    precio: 4000,
+    categoria: "ROSTRO",
+    descripcion: "Tamaño chico, alta pigmentación. Marca: Tejar.",
+    imagen: "/ruborx4tejar.jpeg"
+  },
+  {
+    id: 25,
+    nombre: "Delineador líquido Pink INK",
+    precio: 4000,
+    categoria: "OJOS",
+    imagen: "/delineadorliqpink1.jpeg",
+    imagenes: ["/delineadorliqpink1.jpeg", "/delineadorliqpink2.jpeg"]
+  },
+  {
+    id: 26,
+    nombre: "Delineador retráctil Love Crazy",
+    precio: 1500,
+    categoria: "OJOS",
+    imagen: "/delineadorretractil.jpeg"
+  },
+  {
+    id: 27,
+    nombre: "Bálsamo TEI",
+    precio: 2000,
+    categoria: "LABIOS",
+    imagen: "/teibalsamo.jpeg"
+  },
+  {
+    id: 28,
+    nombre: "Delineador labial Hude Beauty",
+    precio: 1500,
+    categoria: "LABIOS",
+    imagen: "/delineadorlabialhude.jpeg"
+  },
+  {
+    id: 29,
+    nombre: "Corrector Baking",
+    precio: 4200,
+    categoria: "ROSTRO",
+    descripcion: "Corrector baking de Pink 21, cobertura media a alta, para todo tipo de piel.",
+    imagen: "/correctorbaking.jpeg",
+    imagenes: ["/correctorbaking.jpeg", "/correctorbakingtonos.jpeg"],
+    opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6"]
+  },
+  {
+    id: 30,
+    nombre: "Perfilador",
+    precio: 1500,
+    categoria: "ACCESORIOS",
+    imagen: "/perfiladores.jpeg"
+  },
+  {
+    id: 31,
+    nombre: "Brillo labial Plump",
+    precio: 3250,
+    categoria: "LABIOS",
+    imagen: "/brillolabial4angels.jpeg"
+  },
+  {
+    id: 32,
     nombre: "Cejas y pestañas",
     precio: 8600,
     categoria: "OJOS",
@@ -232,7 +302,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo1.jpeg"
   },
   {
-    id: 24,
+    id: 33,
     nombre: "Exfoliación total",
     precio: 9500,
     categoria: "CUIDADO PERSONAL",
@@ -242,7 +312,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo2.jpeg"
   },
   {
-    id: 25,
+    id: 34,
     nombre: "Lip combo",
     precio: 8500,
     categoria: "LABIOS",
@@ -253,7 +323,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo3.jpeg"
   },
   {
-    id: 26,
+    id: 35,
     nombre: "Fresh face",
     precio: 10800,
     categoria: "ROSTRO",
@@ -264,7 +334,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo4.jpeg"
   },
   {
-    id: 27,
+    id: 36,
     nombre: "Duo de esponjas + Mini brochas",
     precio: 4200,
     categoria: "ACCESORIOS",
@@ -274,7 +344,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo5.jpeg"
   },
   {
-    id: 28,
+    id: 37,
     nombre: "Long Lasting",
     precio: 16900,
     categoria: "ROSTRO",
@@ -284,4 +354,3 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/combo6.jpeg"
   }
 ];
-
