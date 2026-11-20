@@ -267,6 +267,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     precio: 1500,
     categoria: "LABIOS",
     consultaTonos: true,
+    descripcion: "Delineador hude beauty",
     imagen: "/delineadorlabialhude.jpeg"
   },
   {
