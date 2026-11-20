@@ -59,6 +59,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     nombre: "Delineador labial Pink 21",
     precio: 1500,
     categoria: "LABIOS",
+    consultaTonos: true,
     descripcion: "",
     imagen: "/delineadorlabialpink21.jpeg"
   },
@@ -265,6 +266,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     nombre: "Delineador labial Hude Beauty",
     precio: 1500,
     categoria: "LABIOS",
+    consultaTonos: true,
     imagen: "/delineadorlabialhude.jpeg"
   },
   {
