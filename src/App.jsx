@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ShoppingBag, Eye, Smile, Sparkles, Brush, Heart, X,
   Plus, Minus, Trash2, Check, MessageCircle, MapPin,
@@ -21,7 +21,16 @@ export default function App() {
   const [categoriaActiva, setCategoriaActiva] = useState('TODAS');
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const [desplegableCatMovil, setDesplegableCatMovil] = useState(false);
-  const [carrito, setCarrito] = useState([]);
+  const [carrito, setCarrito] = useState(() => {
+    try {
+      if (typeof window === 'undefined') return [];
+      const carritoGuardado = localStorage.getItem('lumina-carrito');
+      return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [avisoCarrito, setAvisoCarrito] = useState('');
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   const [metodoEntrega, setMetodoEntrega] = useState('envio');
   const [metodoPago, setMetodoPago] = useState('transferencia');
@@ -33,6 +42,20 @@ export default function App() {
   const [opcionElegida, setOpcionElegida] = useState('');
   const [cantidadModal, setCantidadModal] = useState(1);
   const [fotoActivaIdx, setFotoActivaIdx] = useState(0);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('lumina-carrito', JSON.stringify(carrito));
+    } catch {
+      // Si el navegador bloquea el almacenamiento, la tienda sigue funcionando.
+    }
+  }, [carrito]);
+
+  useEffect(() => {
+    if (!avisoCarrito) return;
+    const temporizador = setTimeout(() => setAvisoCarrito(''), 2800);
+    return () => clearTimeout(temporizador);
+  }, [avisoCarrito]);
 
    const abrirDetalleProducto = (producto) => {
     setProductoModal(producto);
@@ -86,7 +109,7 @@ export default function App() {
       }
       return [...prev, { ...producto, claveUnica, opcionElegida: tono, cantidad }];
     });
-    setCarritoAbierto(true);
+    setAvisoCarrito(`${producto.nombre} agregado al carrito`);
   };
 
   const cambiarCantidad = (claveUnica, delta) => {
@@ -455,9 +478,14 @@ export default function App() {
                 <h3 className="font-serif text-2xl text-[#3A3532]">Tu pedido</h3>
                 <p className="text-xs text-[#6E655F]">{totalProductos} {totalProductos === 1 ? 'producto' : 'productos'}</p>
               </div>
-              <button onClick={() => setCarritoAbierto(false)} className="p-2 text-[#5C534E] hover:text-[#2C2C2C]">
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setCarritoAbierto(false)} className="px-3 py-2 rounded-lg border border-[#E5DDD3] text-[10px] tracking-wide uppercase text-[#6E655F] hover:bg-[#F4EFEA] transition">
+                  Seguir comprando
+                </button>
+                <button onClick={() => setCarritoAbierto(false)} aria-label="Cerrar carrito" className="p-2 text-[#5C534E] hover:text-[#2C2C2C]">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 space-y-5">
@@ -630,6 +658,16 @@ export default function App() {
             )}
 
           </div>
+        </div>
+      )}
+
+      {avisoCarrito && (
+        <div className="fixed bottom-5 left-5 right-20 sm:right-auto z-[60] bg-[#2C2C2C] text-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-3 text-sm" role="status" aria-live="polite">
+          <Check className="w-4 h-4 text-[#C8A29E] shrink-0" />
+          <span className="flex-1">{avisoCarrito}</span>
+          <button onClick={() => { setAvisoCarrito(''); setCarritoAbierto(true); }} className="text-xs uppercase tracking-wider underline underline-offset-4 whitespace-nowrap">
+            Ver carrito
+          </button>
         </div>
       )}
 
