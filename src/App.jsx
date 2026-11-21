@@ -21,15 +21,57 @@ export default function App() {
   const [categoriaActiva, setCategoriaActiva] = useState('TODAS');
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const [desplegableCatMovil, setDesplegableCatMovil] = useState(false);
-  const [carrito, setCarrito] = useState(() => {
-    try {
-      if (typeof window === 'undefined') return [];
-      const carritoGuardado = localStorage.getItem('lumina-carrito');
-      return carritoGuardado ? JSON.parse(carritoGuardado) : [];
-    } catch {
-      return [];
-    }
-  });
+ 
+const [carrito, setCarrito] = useState(() => {
+  try {
+    if (typeof window === 'undefined') return [];
+
+    const carritoGuardado = localStorage.getItem('lumina-carrito');
+    if (!carritoGuardado) return [];
+
+    const datos = JSON.parse(carritoGuardado);
+    if (!Array.isArray(datos)) return [];
+
+    return datos.reduce((resultado, item) => {
+      const producto = PRODUCTOS_INICIALES.find(
+        (p) => p.id === item.id
+      );
+
+      const cantidad = Number(item.cantidad);
+
+      if (!producto || !Number.isInteger(cantidad) || cantidad < 1) {
+        return resultado;
+      }
+
+      const opciones = producto.opciones || producto.tonos || producto.colores || [];
+      const sinStock = producto.opcionesSinStock || [];
+      const tono = item.opcionElegida || '';
+
+      if (
+        opciones.length > 0 &&
+        (!opciones.includes(tono) || sinStock.includes(tono))
+      ) {
+        return resultado;
+      }
+
+      const claveUnica = tono
+        ? `${producto.id}-${tono}`
+        : `${producto.id}`;
+
+      resultado.push({
+        ...producto,
+        claveUnica,
+        opcionElegida: tono,
+        cantidad,
+      });
+
+      return resultado;
+    }, []);
+  } catch {
+    return [];
+  }
+});
+
   const [avisoCarrito, setAvisoCarrito] = useState('');
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   const [metodoEntrega, setMetodoEntrega] = useState('envio');
@@ -99,17 +141,44 @@ export default function App() {
   };
 
   const agregarAlCarrito = (producto, cantidad = 1, tono = '') => {
-    const claveUnica = tono ? `${producto.id}-${tono}` : `${producto.id}`;
+    const opciones = producto.opciones || producto.tonos || producto.colores || [];
+    const sinStock = producto.opcionesSinStock || [];
+
+    if (opciones.length > 0) {
+      if (!tono || !opciones.includes(tono) || sinStock.includes(tono)) {
+        setAvisoCarrito('Por favor, elegí un tono disponible.');
+        return false;
+      }
+    }
+
+    const claveUnica = tono
+      ? `${producto.id}-${tono}`
+      : `${producto.id}`;
+
     setCarrito((prev) => {
       const existe = prev.find((item) => item.claveUnica === claveUnica);
+
       if (existe) {
         return prev.map((item) =>
-          item.claveUnica === claveUnica ? { ...item, cantidad: item.cantidad + cantidad } : item
+          item.claveUnica === claveUnica
+            ? { ...item, cantidad: item.cantidad + cantidad }
+            : item
         );
       }
-      return [...prev, { ...producto, claveUnica, opcionElegida: tono, cantidad }];
+
+      return [
+        ...prev,
+        {
+          ...producto,
+          claveUnica,
+          opcionElegida: tono,
+          cantidad,
+        },
+      ];
     });
+
     setAvisoCarrito(`${producto.nombre} agregado al carrito`);
+    return true;
   };
 
   const cambiarCantidad = (claveUnica, delta) => {
@@ -149,9 +218,14 @@ export default function App() {
     }
     setErrorForm('');
 
-    const lineasProductos = carrito
+      const lineasProductos = carrito
       .map((item) => {
-        const detalleTono = item.opcionElegida ? ` (Tono/Opción: ${item.opcionElegida})` : '';
+        const detalleTono = item.opcionElegida
+          ? ` (Tono/Opción: ${item.opcionElegida})`
+          : item.consultaTonos
+          ? ' (Tonos a consultar por WhatsApp)'
+          : '';
+
         return `• ${item.cantidad}x ${item.nombre}${detalleTono} (${formatearPrecio(item.precio * item.cantidad)})`;
       })
       .join('\n');
@@ -319,11 +393,19 @@ export default function App() {
                     <p className="font-medium text-sm sm:text-base text-[#2C2C2C] mb-3">{formatearPrecio(producto.precio)}</p>
                   </div>
 
-                  <button
-                    onClick={() => (tieneTonos ? abrirDetalleProducto(producto) : agregarAlCarrito(producto, 1, ''))}
+                                    <button
+                    onClick={() =>
+                      (tieneTonos || producto.consultaTonos)
+                        ? abrirDetalleProducto(producto)
+                        : agregarAlCarrito(producto, 1, '')
+                    }
                     className="w-full py-2.5 rounded-xl bg-[#F4EFEA] hover:bg-[#2C2C2C] text-[#2C2C2C] hover:text-white text-[11px] tracking-[0.16em] uppercase transition font-medium"
                   >
-                    {tieneTonos ? 'Elegir tono' : 'Agregar'}
+                    {tieneTonos
+                      ? 'Elegir tono'
+                      : producto.consultaTonos
+                      ? 'Consultar tonos'
+                      : 'Agregar'}
                   </button>
                 </div>
               </div>
@@ -383,10 +465,16 @@ export default function App() {
                 <p className="text-xl font-semibold text-[#2C2C2C] mt-1">{formatearPrecio(productoModal.precio)}</p>
               </div>
 
-                            {productoModal.descripcion && (
+                                          {(productoModal.descripcion ||
+                productoModal.textoAhorro ||
+                productoModal.consultaTonos) && (
                 <div className="text-sm text-[#5C534E] leading-relaxed border-t border-[#E5DDD3] pt-3 space-y-2 whitespace-pre-line">
-                  <p>{productoModal.descripcion}</p>
-                                    {productoModal.textoAhorro && (
+
+                  {productoModal.descripcion && (
+                    <p>{productoModal.descripcion}</p>
+                  )}
+
+                  {productoModal.textoAhorro && (
                     <p className="pt-1 font-serif italic text-lg text-[#2C2C2C]">
                       {productoModal.textoAhorro}
                     </p>
@@ -397,9 +485,9 @@ export default function App() {
                       * Consultá tonos disponibles por WhatsApp al confirmar tu pedido.
                     </p>
                   )}
+
                 </div>
               )}
-
 
               {opcionesModal.length > 0 && (
                 <div className="border-t border-[#E5DDD3] pt-4">
@@ -456,12 +544,26 @@ export default function App() {
                   </button>
                 </div>
 
-                <button
+                               <button
                   onClick={() => {
-                    agregarAlCarrito(productoModal, cantidadModal, opcionElegida);
-                    cerrarDetalleProducto();
+                    const agregado = agregarAlCarrito(
+                      productoModal,
+                      cantidadModal,
+                      opcionElegida
+                    );
+
+                    if (agregado) {
+                      cerrarDetalleProducto();
+                    }
                   }}
-                  className="flex-1 bg-[#2C2C2C] text-white py-3.5 px-5 rounded-xl text-xs tracking-[0.18em] uppercase font-medium hover:bg-[#444] transition"
+                  disabled={
+                    opcionesModal.length > 0 &&
+                    (
+                      !opcionElegida ||
+                      (productoModal.opcionesSinStock || []).includes(opcionElegida)
+                    )
+                  }
+                  className="flex-1 bg-[#2C2C2C] text-white py-3.5 px-5 rounded-xl text-xs tracking-[0.18em] uppercase font-medium hover:bg-[#444] transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Agregar al carrito
                 </button>
@@ -576,11 +678,14 @@ export default function App() {
                     </div>
 
                     {metodoEntrega === 'envio' && (
-                      <input
+                                            <input
                         type="text"
                         placeholder="Tu dirección y barrio para el envío *"
                         value={direccionCliente}
-                        onChange={(e) => setDireccionCliente(e.target.value)}
+                        onChange={(e) => {
+                          setDireccionCliente(e.target.value);
+                          setErrorForm('');
+                        }}
                         className="w-full px-3.5 py-2.5 text-xs text-[#3A3532] placeholder-[#7A716B] border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#8C7F78]"
                       />
                     )}
@@ -613,11 +718,14 @@ export default function App() {
 
                   <div className="bg-white p-4 rounded-xl border border-[#E5DDD3] space-y-3">
                     <p className="text-[11px] tracking-[0.18em] uppercase text-[#5C534E] font-medium">3. DATOS DE CONTACTO</p>
-                    <input
+                                       <input
                       type="text"
                       placeholder="Tu nombre y apellido *"
                       value={nombreCliente}
-                      onChange={(e) => setNombreCliente(e.target.value)}
+                      onChange={(e) => {
+                        setNombreCliente(e.target.value);
+                        setErrorForm('');
+                      }}
                       className="w-full px-3.5 py-2.5 text-xs text-[#3A3532] placeholder-[#7A716B] border border-[#E5DDD3] rounded-xl focus:outline-none focus:border-[#8C7F78]"
                     />
                   </div>
