@@ -53,6 +53,8 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     imagen: "/correctortei.jpeg",
     imagenes: ["/correctortei.jpeg", "/tonoscorrectortei.jpeg"],
     opciones: ["Tono 7", "Tono 8", "Tono 9", "Tono 10", "Tono 11", "Tono 12"]
+    opcionesSinStock: ["Tono 8"],
+    
   },
   {
     id: 7,
@@ -181,7 +183,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     descripcion: "",
     imagen: "/ruborenbarra.jpeg",
     opciones: ["Tono 1", "Tono 2", "Tono 3", "Tono 4", "Tono 5", "Tono 6"],
-    opcionesSinStock: ["Tono 1", "Tono 3", "Tono 6"],
+    opcionesSinStock: ["Tono 1", "Tono 3", "Tono 4", "Tono 5", "Tono 6"],
   },
   {
     id: 19,
