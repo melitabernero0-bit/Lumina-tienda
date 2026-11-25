@@ -52,7 +52,7 @@ Apto rostro y cuerpo | Todo tipo de piel | Vegano y cruelty-free.`,
     descripcion: "Ideal para el día a día. Cobertura ligera a media, hidratante y fácil de difuminar.",
     imagen: "/correctortei.jpeg",
     imagenes: ["/correctortei.jpeg", "/tonoscorrectortei.jpeg"],
-    opciones: ["Tono 7", "Tono 8", "Tono 9", "Tono 10", "Tono 11", "Tono 12"]
+    opciones: ["Tono 7", "Tono 8", "Tono 9", "Tono 10", "Tono 11", "Tono 12"],
     opcionesSinStock: ["Tono 8"],
     
   },
